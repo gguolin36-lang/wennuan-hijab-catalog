@@ -136,6 +136,47 @@ header{
 }
 .stat-label{font-size:13px;color:var(--brown-light);text-transform:uppercase;letter-spacing:1.5px}
 
+/* === Hero Channels === */
+.hero-channels{
+  display:flex;justify-content:center;gap:18px;flex-wrap:wrap;
+  margin-top:44px;padding:0 20px;
+}
+.channel-btn{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 22px;border-radius:14px;
+  text-decoration:none;min-width:300px;max-width:380px;
+  transition:all 0.3s ease;text-align:left;
+  border:1.5px solid transparent;
+}
+.channel-primary{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+  color:white;box-shadow:0 8px 24px rgba(201,168,76,0.3);
+}
+.channel-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 32px rgba(201,168,76,0.45);
+}
+.channel-secondary{
+  background:var(--white);color:var(--brown);
+  border-color:var(--cream-dark);
+}
+.channel-secondary:hover{
+  transform:translateY(-3px);
+  border-color:var(--gold);
+  box-shadow:0 10px 28px rgba(61,43,31,0.12);
+}
+.ch-icon{font-size:26px;flex-shrink:0}
+.ch-text{flex:1;display:flex;flex-direction:column;line-height:1.3}
+.ch-text strong{font-size:14px;font-weight:700;letter-spacing:0.3px;margin-bottom:3px}
+.ch-text em{
+  font-size:11px;font-style:normal;opacity:0.85;
+  letter-spacing:0.2px;
+}
+.channel-primary .ch-text em{color:rgba(255,255,255,0.9)}
+.channel-secondary .ch-text em{color:var(--brown-light)}
+.ch-arrow{font-size:20px;font-weight:300;opacity:0.7;flex-shrink:0;transition:transform 0.3s}
+.channel-btn:hover .ch-arrow{transform:translateX(4px);opacity:1}
+
 /* === Filter Bar === */
 .filter-bar{
   position:sticky;top:96px;z-index:50;
@@ -599,6 +640,18 @@ footer{
     <div class="stat"><div class="stat-num">100</div><div class="stat-label">Pieces MOQ</div></div>
     <div class="stat"><div class="stat-num">7</div><div class="stat-label">Product Lines</div></div>
   </div>
+  <div class="hero-channels">
+    <a href="https://www.wennuanhijab.com/" target="_blank" class="channel-btn channel-primary">
+      <span class="ch-icon">🌐</span>
+      <span class="ch-text"><strong>Visit Official Website</strong><em>wennuanhijab.com — full catalog & company info</em></span>
+      <span class="ch-arrow">→</span>
+    </a>
+    <a href="https://wennuanfushi.en.alibaba.com/" target="_blank" class="channel-btn channel-secondary">
+      <span class="ch-icon">🛒</span>
+      <span class="ch-text"><strong>Alibaba.com Verified Store</strong><em>Trade Assurance · Secure payment</em></span>
+      <span class="ch-arrow">→</span>
+    </a>
+  </div>
 </section>
 
 <!-- Filter Bar -->
@@ -668,7 +721,8 @@ footer{
       <a href="#" onclick="filterCategory('Liquid Jersey')">Liquid Jersey</a>
     </div>
     <div class="footer-col">
-      <h5>Contact</h5>
+      <h5>Contact & Channels</h5>
+      <a href="https://www.wennuanhijab.com/" target="_blank">🌐 wennuanhijab.com (Official)</a>
       <a href="https://wennuanfushi.en.alibaba.com/" target="_blank">Alibaba.com Store</a>
       <a href="mailto:wennuan@wennuanfactory.com">wennuan@wennuanfactory.com</a>
       <a href="https://wa.me/8615024597561" target="_blank">WhatsApp: +86 150 2459 7561</a>
@@ -1485,7 +1539,7 @@ li{margin:6px 0}
 </style></head><body>
 <h1>Yiwu Wennuan Clothing Co., Ltd.</h1>
 <h2 style="border:none;margin-top:0;color:#6B4F3F;font-weight:normal">Premium Hijab USP Catalog — ${dateStr}</h2>
-<p style="font-size:13px;color:#6B4F3F">20+ Years Manufacturer · OEM/ODM Welcome · Email: wennuan@wennuanfactory.com · WhatsApp: +86 15024597561</p>`;
+<p style="font-size:13px;color:#6B4F3F">20+ Years Manufacturer · OEM/ODM Welcome<br><b>Official Website:</b> www.wennuanhijab.com &nbsp;|&nbsp; <b>Email:</b> wennuan@wennuanfactory.com &nbsp;|&nbsp; <b>WhatsApp:</b> +86 150 2459 7561</p>`;
 
   const byCategory = {};
   products.forEach(p => {(byCategory[p.category] = byCategory[p.category] || []).push(p);});
@@ -1532,6 +1586,12 @@ document.addEventListener('keydown', e => {
 renderFilters();
 renderProducts();
 updateBadge();
+</script>
+</body>
+</html>
+body>
+</html>
+
 </script>
 </body>
 </html>
