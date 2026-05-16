@@ -248,6 +248,144 @@ header{
   transition:all 0.25s ease;
 }
 .btn-view:hover{border-color:var(--gold);color:var(--gold-dark)}
+.btn-details{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+  color:white;border:none;padding:10px 12px;border-radius:8px;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:all 0.25s ease;
+}
+.btn-details:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(201,168,76,0.4)}
+
+/* === Detail Modal === */
+.detail-overlay{
+  position:fixed;inset:0;background:rgba(61,43,31,0.7);backdrop-filter:blur(8px);
+  z-index:300;opacity:0;pointer-events:none;
+  transition:opacity 0.3s ease;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.detail-overlay.open{opacity:1;pointer-events:auto}
+.detail-modal{
+  background:var(--white);border-radius:20px;max-width:900px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 30px 80px rgba(0,0,0,0.3);
+  transform:scale(0.95);transition:transform 0.3s ease;
+}
+.detail-overlay.open .detail-modal{transform:scale(1)}
+.detail-header{
+  position:relative;background:linear-gradient(135deg,var(--cream-dark) 0%,var(--cream) 100%);
+  padding:32px 36px 28px;border-radius:20px 20px 0 0;
+  border-bottom:1px solid rgba(201,168,76,0.2);
+}
+.detail-close{
+  position:absolute;top:16px;right:16px;
+  width:36px;height:36px;border-radius:50%;border:none;
+  background:var(--white);color:var(--brown);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);transition:transform 0.2s;
+}
+.detail-close:hover{transform:rotate(90deg)}
+.detail-category{
+  display:inline-block;background:var(--gold);color:white;
+  padding:4px 12px;border-radius:20px;font-size:11px;
+  font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.detail-headline{
+  font-family:'Playfair Display',serif;font-size:28px;
+  color:var(--brown);font-weight:700;line-height:1.2;
+  margin-bottom:8px;
+}
+.detail-name{
+  font-size:14px;color:var(--brown-light);line-height:1.5;
+}
+.detail-body{padding:28px 36px 36px}
+.detail-grid{display:grid;grid-template-columns:280px 1fr;gap:32px;margin-bottom:28px}
+.detail-img-box{
+  border-radius:14px;overflow:hidden;aspect-ratio:1/1;
+  background:var(--cream-dark);
+}
+.detail-img-box img{width:100%;height:100%;object-fit:cover}
+.detail-specs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.spec-item{
+  background:var(--cream);padding:14px 16px;border-radius:10px;
+  border-left:3px solid var(--gold);
+}
+.spec-label{font-size:11px;color:var(--brown-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.spec-value{font-size:15px;color:var(--brown);font-weight:600}
+.detail-section{margin-bottom:24px}
+.detail-section h4{
+  font-family:'Playfair Display',serif;font-size:18px;
+  color:var(--brown);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.detail-section h4::before{
+  content:'';display:inline-block;width:24px;height:2px;background:var(--gold);
+}
+.detail-usp-text{
+  font-size:15px;line-height:1.8;color:var(--brown);
+  background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(248,243,232,0.4));
+  padding:18px 22px;border-radius:12px;border-left:3px solid var(--gold);
+}
+.detail-highlights{list-style:none;padding:0}
+.detail-highlights li{
+  padding:10px 0;padding-left:28px;position:relative;
+  font-size:14px;color:var(--brown);line-height:1.5;
+  border-bottom:1px dashed rgba(201,168,76,0.2);
+}
+.detail-highlights li:last-child{border-bottom:none}
+.detail-highlights li::before{
+  content:'✦';position:absolute;left:8px;top:10px;
+  color:var(--gold);font-weight:bold;
+}
+.detail-tags{display:flex;flex-wrap:wrap;gap:8px}
+.detail-tag{
+  background:var(--cream-dark);color:var(--brown);
+  padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;
+}
+.detail-actions{
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;
+  padding-top:24px;border-top:1px solid var(--cream-dark);
+}
+.detail-actions button,.detail-actions a{
+  flex:1;min-width:140px;padding:14px;border-radius:10px;
+  font-size:14px;font-weight:600;font-family:inherit;
+  border:none;cursor:pointer;text-decoration:none;text-align:center;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all 0.25s ease;
+}
+.btn-copy-usp{background:var(--gold);color:white}
+.btn-copy-usp:hover{background:var(--gold-dark);transform:translateY(-2px)}
+.btn-add-modal{background:var(--brown);color:var(--cream)}
+.btn-add-modal:hover{background:#2A1E15}
+.btn-alibaba{background:#FF6A00;color:white}
+.btn-alibaba:hover{background:#E55F00;transform:translateY(-2px)}
+@media (max-width:768px){
+  .detail-grid{grid-template-columns:1fr}
+  .detail-specs{grid-template-columns:1fr}
+  .detail-header{padding:24px 22px 20px}
+  .detail-body{padding:20px 22px 28px}
+  .detail-headline{font-size:22px}
+}
+
+/* === Export All Docs Button === */
+.export-docs-bar{
+  background:linear-gradient(135deg,var(--brown) 0%,#2A1E15 100%);
+  color:var(--cream);padding:24px;border-radius:16px;
+  margin:40px 0 20px;display:flex;align-items:center;
+  justify-content:space-between;gap:20px;flex-wrap:wrap;
+  box-shadow:var(--shadow);
+}
+.export-docs-text h4{
+  font-family:'Playfair Display',serif;font-size:20px;margin-bottom:4px;color:var(--cream);
+}
+.export-docs-text p{font-size:13px;opacity:0.8;margin:0}
+.btn-export-docs{
+  background:var(--gold);color:white;border:none;
+  padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+  transition:all 0.25s ease;
+}
+.btn-export-docs:hover{background:var(--gold-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.4)}
 
 /* === Quote Drawer === */
 .drawer-overlay{
@@ -471,7 +609,19 @@ footer{
 <!-- Products -->
 <section class="products-section">
   <div class="products-grid" id="productsGrid"></div>
+  <div class="export-docs-bar">
+    <div class="export-docs-text">
+      <h4>📄 Need full product descriptions for Alibaba?</h4>
+      <p>Download all 21 USP copywriting in one Word document — ready to paste.</p>
+    </div>
+    <button class="btn-export-docs" onclick="exportAllUSPDoc()">⬇ Download USP Document (.doc)</button>
+  </div>
 </section>
+
+<!-- Detail Modal -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetails()">
+  <div class="detail-modal" id="detailModal"></div>
+</div>
 
 <!-- Why Us -->
 <section class="why-section">
@@ -812,7 +962,8 @@ function renderProducts(){
           <button class="btn-add ${inBasket?'added':''}" onclick="toggleBasket(${id})">
             ${inBasket ? '✓ Added' : '+ Quote'}
           </button>
-          <a class="btn-view" href="${p.url}" target="_blank" rel="noopener" title="View details">↗</a>
+          <button class="btn-details" onclick="openDetails(${id})" title="View full details">📖 Details</button>
+          <a class="btn-view" href="${p.url}" target="_blank" rel="noopener" title="Alibaba page">↗</a>
         </div>
       </div>
     </div>`;
@@ -938,19 +1089,147 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// ===== Detail Modal =====
+function openDetails(id){
+  const p = products[id];
+  const modal = document.getElementById('detailModal');
+  const inBasket = quoteBasket[id];
+  modal.innerHTML = `
+    <div class="detail-header">
+      <button class="detail-close" onclick="closeDetails()">×</button>
+      <span class="detail-category">${p.category}</span>
+      <h2 class="detail-headline">${p.headline}</h2>
+      <p class="detail-name">${p.name}</p>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-img-box">
+          <img src="${p.image}" alt="${p.name}" onerror="this.style.opacity=0.3">
+        </div>
+        <div class="detail-specs">
+          <div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">${p.material}</div></div>
+          <div class="spec-item"><div class="spec-label">MOQ</div><div class="spec-value">${p.moq}</div></div>
+          <div class="spec-item"><div class="spec-label">FOB Price</div><div class="spec-value">${p.price}</div></div>
+          <div class="spec-item"><div class="spec-label">Category</div><div class="spec-value">${p.category}</div></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>✨ Unique Selling Proposition</h4>
+        <p class="detail-usp-text">${p.usp}</p>
+      </div>
+
+      <div class="detail-section">
+        <h4>🌟 Key Highlights</h4>
+        <ul class="detail-highlights">
+          ${p.highlights.map(h => `<li>${h}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="detail-section">
+        <h4>🎯 Best for</h4>
+        <div class="detail-tags">
+          ${p.occasions.map(o => `<span class="detail-tag">${o}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>🛠 Customization Options</h4>
+        <p style="font-size:14px;line-height:1.7;color:var(--brown);">${p.customization}</p>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-copy-usp" onclick="copyUSP(${id})">📋 Copy Full USP</button>
+        <button class="btn-add-modal" onclick="toggleBasket(${id});closeDetails();">${inBasket?'✓ In Basket':'+ Add to Quote'}</button>
+        <a class="btn-alibaba" href="${p.url}" target="_blank" rel="noopener">↗ View on Alibaba</a>
+      </div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetails(){
+  document.getElementById('detailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyUSP(id){
+  const p = products[id];
+  const text = `${p.name}\n\n${p.headline}\n\n${p.usp}\n\nKey Features:\n${p.highlights.map(h=>'• '+h).join('\n')}\n\nBest for: ${p.occasions.join(', ')}\n\nCustomization: ${p.customization}\n\nMaterial: ${p.material}\nMOQ: ${p.moq}\nPrice: ${p.price}`;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✓ USP copied — ready to paste to Alibaba!');
+  }).catch(()=>{
+    showToast('Copy failed, please try manually');
+  });
+}
+
+// ===== Export Word Document =====
+function exportAllUSPDoc(){
+  const dateStr = new Date().toISOString().slice(0,10);
+  let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>Wennuan Hijab USP Catalog</title>
+<style>
+body{font-family:Georgia,serif;color:#3D2B1F;line-height:1.7;max-width:780px;margin:40px auto;padding:20px}
+h1{color:#C9A84C;border-bottom:3px solid #C9A84C;padding-bottom:12px;font-size:28px}
+h2{color:#3D2B1F;margin-top:36px;padding-bottom:6px;border-bottom:1px solid #EDE4CE;font-size:22px}
+h3{color:#A8862E;margin-top:24px;font-size:17px}
+.product{page-break-inside:avoid;margin-bottom:36px;padding:20px;border:1px solid #EDE4CE;border-radius:8px;background:#FBF8F1}
+.meta{font-size:13px;color:#6B4F3F;margin:8px 0}
+.meta b{color:#3D2B1F}
+.usp{background:#FFF;padding:14px;border-left:3px solid #C9A84C;margin:12px 0;font-style:italic}
+ul{padding-left:22px}
+li{margin:6px 0}
+.tags{margin:8px 0}
+.tag{display:inline-block;background:#EDE4CE;color:#3D2B1F;padding:3px 10px;border-radius:10px;margin:2px;font-size:12px}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #EDE4CE;text-align:center;color:#6B4F3F;font-size:12px}
+</style></head><body>
+<h1>Yiwu Wennuan Clothing Co., Ltd.</h1>
+<h2 style="border:none;margin-top:0;color:#6B4F3F;font-weight:normal">Premium Hijab USP Catalog — ${dateStr}</h2>
+<p style="font-size:13px;color:#6B4F3F">20+ Years Manufacturer · OEM/ODM Welcome · Email: wennuan@wennuanfactory.com · WhatsApp: +86 15024597561</p>`;
+
+  const byCategory = {};
+  products.forEach(p => {(byCategory[p.category] = byCategory[p.category] || []).push(p);});
+
+  Object.keys(byCategory).forEach(cat => {
+    html += `<h2>${cat}</h2>`;
+    byCategory[cat].forEach(p => {
+      html += `<div class="product">
+        <h3>${p.headline}</h3>
+        <p style="font-size:13px;color:#6B4F3F;margin:4px 0 10px"><b>Product Title:</b> ${p.name}</p>
+        <div class="meta"><b>Material:</b> ${p.material} &nbsp;|&nbsp; <b>MOQ:</b> ${p.moq} &nbsp;|&nbsp; <b>FOB Price:</b> ${p.price}</div>
+        <div class="usp">${p.usp}</div>
+        <p><b>Key Highlights:</b></p>
+        <ul>${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
+        <p><b>Best for:</b></p>
+        <div class="tags">${p.occasions.map(o => `<span class="tag">${o}</span>`).join('')}</div>
+        <p style="margin-top:12px"><b>Customization:</b> ${p.customization}</p>
+        <p style="margin-top:8px;font-size:12px"><b>Alibaba Link:</b> <a href="${p.url}">${p.url}</a></p>
+      </div>`;
+    });
+  });
+
+  html += `<div class="footer">© ${new Date().getFullYear()} Yiwu Wennuan Clothing Co., Ltd. — All rights reserved.<br>Generated from catalog.wennuanfactory.com</div></body></html>
+`;
+
+  const blob = new Blob(['\ufeff', html], {type:'application/msword'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `Wennuan-Hijab-USP-Catalog-${dateStr}.doc`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✓ USP Document downloaded!');
+}
+
+// ESC closes modal
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    closeDetails();
+    closeDrawer();
+  }
+});
+
 // Init
 renderFilters();
-renderProducts();
-updateBadge();
-</script>
-</body>
-</html>
-nderProducts();
-updateBadge();
-</script>
-</body>
-</html>
-rFilters();
 renderProducts();
 updateBadge();
 </script>
