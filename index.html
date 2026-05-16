@@ -890,6 +890,18 @@ function setQty(id,val){
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
 }
 
+function submitQuoteWhatsApp(){
+  const ids = Object.keys(quoteBasket);
+  if(ids.length === 0){ showToast('Basket is empty'); return; }
+  let msg = `Hello Wennuan Team,\n\nI am interested in the following products:\n\n`;
+  ids.forEach((id,i) => {
+    const p = products[id];
+    msg += `${i+1}. ${p.name}\n   Category: ${p.category}\n   Quantity: ${quoteBasket[id].qty} pcs\n   Link: ${p.url}\n\n`;
+  });
+  msg += `Please send me your best quotation including shipping options.\n\nThank you.`;
+  window.open(`https://wa.me/8615024597561?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
 function submitQuote(){
   const ids = Object.keys(quoteBasket);
   if(ids.length === 0){ showToast('Basket is empty'); return; }
@@ -899,7 +911,7 @@ function submitQuote(){
     body += `${i+1}. ${p.name}%0D%0A   Category: ${p.category}%0D%0A   Quantity: ${quoteBasket[id].qty} pcs%0D%0A   Link: ${p.url}%0D%0A%0D%0A`;
   });
   body += `Please send me your best quotation including shipping options.%0D%0A%0D%0AThank you.`;
-  window.location.href = `mailto:info@wennuanfushi.com?subject=Quote Request - Wennuan Hijab Catalog&body=${body}`;
+  window.location.href = `mailto:wennuan@wennuanfactory.com?subject=Quote Request - Wennuan Hijab Catalog&body=${body}`;
 }
 
 function exportCSV(){
@@ -927,6 +939,17 @@ function showToast(msg){
 
 // Init
 renderFilters();
+renderProducts();
+updateBadge();
+</script>
+</body>
+</html>
+nderProducts();
+updateBadge();
+</script>
+</body>
+</html>
+rFilters();
 renderProducts();
 updateBadge();
 </script>
