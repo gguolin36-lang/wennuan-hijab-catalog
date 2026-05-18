@@ -597,6 +597,79 @@ header{
   background:none;border:none;color:#c44;font-size:18px;
   cursor:pointer;padding:4px;
 }
+
+/* === Grouped Quote Basket (product + color variants) === */
+.quote-group{
+  border:1px solid var(--cream-dark);border-radius:14px;
+  margin-bottom:14px;overflow:hidden;background:#fff;
+  box-shadow:0 2px 8px rgba(61,43,31,0.04);
+}
+.quote-group-head{
+  display:flex;gap:12px;padding:14px;align-items:center;
+  background:linear-gradient(135deg,#fffefb,var(--cream));
+  border-bottom:1px solid var(--cream-dark);
+}
+.quote-group-img{
+  width:72px;height:72px;border-radius:10px;object-fit:cover;
+  background:var(--cream);flex-shrink:0;
+  border:2px solid var(--gold);
+  box-shadow:0 3px 10px rgba(201,168,76,0.18);
+}
+.quote-group-info{flex:1;min-width:0}
+.quote-group-name{
+  font-size:14px;font-weight:700;color:var(--brown);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;line-height:1.3;margin-bottom:3px;
+}
+.quote-group-meta{font-size:11px;color:var(--brown-light);margin-bottom:5px}
+.quote-group-summary{
+  font-size:12px;color:var(--gold-dark);font-weight:500;
+  background:rgba(201,168,76,0.1);padding:4px 10px;border-radius:8px;
+  display:inline-block;
+}
+.quote-group-summary strong{color:var(--brown);font-weight:700}
+.quote-group-remove-all{
+  background:none;border:none;color:#c44;font-size:20px;
+  cursor:pointer;padding:4px;align-self:flex-start;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;
+}
+.quote-group-remove-all:hover{background:rgba(196,68,68,0.12)}
+
+.quote-variants{padding:6px 12px 10px;background:#fafaf6}
+.variant-row{
+  display:flex;gap:10px;padding:10px 6px;align-items:center;
+  border-bottom:1px dashed var(--cream-dark);
+}
+.variant-row:last-of-type{border-bottom:none}
+.variant-thumb{
+  width:48px;height:48px;border-radius:8px;object-fit:cover;
+  cursor:zoom-in;background:var(--cream);
+  border:1.5px solid var(--cream-dark);flex-shrink:0;
+  transition:transform 0.2s;
+}
+.variant-thumb:hover{transform:scale(1.1);border-color:var(--gold)}
+.variant-info{flex:1;min-width:0}
+.variant-label{
+  font-size:12px;color:var(--brown);margin-bottom:4px;
+}
+.variant-label strong{color:var(--gold-dark);font-size:13px;letter-spacing:0.3px}
+.qty-control-sm .qty-btn{width:20px;height:20px;font-size:13px}
+.qty-control-sm .qty-input{width:46px;font-size:11px}
+.variant-remove{
+  background:none;border:none;color:#c44;font-size:16px;
+  cursor:pointer;padding:4px 6px;opacity:0.6;transition:opacity 0.2s;
+}
+.variant-remove:hover{opacity:1}
+.add-more-colors{
+  width:100%;margin-top:6px;padding:8px;
+  background:transparent;border:1.5px dashed var(--gold);
+  color:var(--gold-dark);border-radius:8px;cursor:pointer;
+  font-size:12px;font-weight:600;font-family:inherit;
+  transition:all 0.2s;
+}
+.add-more-colors:hover{background:rgba(201,168,76,0.1);border-style:solid}
 .drawer-footer{
   padding:20px 24px;border-top:1px solid var(--cream-dark);
   background:var(--cream);
@@ -1914,7 +1987,9 @@ function toggleBasket(id){
 }
 
 function updateBadge(){
-  document.getElementById('quoteBadge').textContent = Object.keys(quoteBasket).length;
+  // Count distinct products (not color variants) for cleaner badge
+  const productIds = new Set(Object.values(quoteBasket).map(it => it.productId));
+  document.getElementById('quoteBadge').textContent = productIds.size;
 }
 
 function openDrawer(){
@@ -1939,30 +2014,97 @@ function renderDrawer(){
       </div>`;
     return;
   }
-  body.innerHTML = keys.map(key => {
+  // Group entries by productId, preserving insertion order
+  const groups = {};
+  const order = [];
+  keys.forEach(key => {
     const item = quoteBasket[key];
-    const p = products[item.productId];
+    if(!item) return;
+    const pid = item.productId;
+    if(!(pid in groups)){
+      groups[pid] = [];
+      order.push(pid);
+    }
+    groups[pid].push({key, item});
+  });
+
+  body.innerHTML = order.map(pid => {
+    const p = products[pid];
     if(!p) return '';
-    const displayImg = item.skuImage || p.image;
-    const skuBadge = item.sku
-      ? `<span class="sku-badge-inline">🎨 Color #${item.sku}</span>`
-      : '';
-    return `
-    <div class="quote-item">
-      <img class="quote-item-img" src="${displayImg}" alt="" ${item.sku?`onclick="openSku('${item.skuImage}','#${item.sku}')" style="cursor:zoom-in"`:''}>
-      <div class="quote-item-info">
-        <div class="quote-item-name">${p.name}</div>
-        <div class="quote-item-meta">${p.category} · ${p.price}</div>
-        ${skuBadge}
-        <div class="qty-control">
-          <button class="qty-btn" onclick="updateQty('${key}',-50)">−</button>
-          <input class="qty-input" type="number" value="${item.qty}" onchange="setQty('${key}',this.value)" min="1">
-          <span style="font-size:11px;color:var(--brown-light)">pcs</span>
+    const entries = groups[pid];
+    const totalQty = entries.reduce((s,e) => s + parseInt(e.item.qty || 0), 0);
+    const colorEntries = entries.filter(e => e.item.sku);
+    const plainEntry = entries.find(e => !e.item.sku);
+
+    // Plain (no-SKU) product card
+    if(!colorEntries.length && plainEntry){
+      const e = plainEntry;
+      return `
+      <div class="quote-group">
+        <div class="quote-group-head">
+          <img class="quote-group-img" src="${p.image}" alt="">
+          <div class="quote-group-info">
+            <div class="quote-group-name">${p.name}</div>
+            <div class="quote-group-meta">${p.category} · ${p.price}</div>
+            <div class="qty-control" style="margin-top:8px">
+              <button class="qty-btn" onclick="updateQty('${e.key}',-50)">−</button>
+              <input class="qty-input" type="number" value="${e.item.qty}" onchange="setQty('${e.key}',this.value)" min="1">
+              <span style="font-size:11px;color:var(--brown-light)">pcs</span>
+            </div>
+          </div>
+          <button class="quote-item-remove" onclick="removeBasketKey('${e.key}')" title="Remove">×</button>
         </div>
+      </div>`;
+    }
+
+    // Product with color variants
+    return `
+    <div class="quote-group">
+      <div class="quote-group-head">
+        <img class="quote-group-img" src="${p.image}" alt="">
+        <div class="quote-group-info">
+          <div class="quote-group-name">${p.name}</div>
+          <div class="quote-group-meta">${p.category} · ${p.price}</div>
+          <div class="quote-group-summary">
+            🎨 <strong>${colorEntries.length}</strong> color${colorEntries.length>1?'s':''}
+            · Total <strong>${totalQty}</strong> pcs
+          </div>
+        </div>
+        <button class="quote-group-remove-all" onclick="removeAllVariants(${pid})" title="Remove all variants">×</button>
       </div>
-      <button class="quote-item-remove" onclick="removeBasketKey('${key}')" title="Remove">×</button>
+      <div class="quote-variants">
+        ${colorEntries.map(e => `
+          <div class="variant-row">
+            <img class="variant-thumb" src="${e.item.skuImage}" alt="Color ${e.item.sku}"
+                 onclick="openSku('${e.item.skuImage}','#${e.item.sku}')" title="Click to enlarge">
+            <div class="variant-info">
+              <div class="variant-label">Color <strong>#${e.item.sku}</strong></div>
+              <div class="qty-control qty-control-sm">
+                <button class="qty-btn" onclick="updateQty('${e.key}',-50)">−</button>
+                <input class="qty-input" type="number" value="${e.item.qty}" onchange="setQty('${e.key}',this.value)" min="1">
+                <span style="font-size:11px;color:var(--brown-light)">pcs</span>
+              </div>
+            </div>
+            <button class="variant-remove" onclick="removeBasketKey('${e.key}')" title="Remove this color">×</button>
+          </div>
+        `).join('')}
+        <button class="add-more-colors" onclick="closeDrawer();openDetails(${pid});setTimeout(()=>{const g=document.querySelector('.detail-modal .sku-grid');if(g)g.scrollIntoView({behavior:'smooth',block:'center'})},350)">
+          + Add another color
+        </button>
+      </div>
     </div>`;
   }).join('');
+}
+
+function removeAllVariants(productId){
+  Object.keys(quoteBasket).forEach(k => {
+    if(quoteBasket[k].productId === productId) delete quoteBasket[k];
+  });
+  localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
+  updateBadge();
+  renderProducts();
+  renderDrawer();
+  showToast('All variants removed');
 }
 
 function updateQty(key,delta){
