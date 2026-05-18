@@ -439,10 +439,11 @@ header{
 }
 .sku-num{
   position:absolute;bottom:0;left:0;right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,0.65));
-  color:#fff;font-size:10px;font-weight:600;text-align:center;
-  padding:8px 2px 3px;letter-spacing:0.3px;
+  background:linear-gradient(transparent 0%,rgba(0,0,0,0.55) 40%,rgba(0,0,0,0.85) 100%);
+  color:#fff;font-size:9px;font-weight:600;text-align:center;
+  padding:14px 3px 4px;letter-spacing:0.2px;line-height:1.15;
   opacity:0;transition:opacity 0.2s;pointer-events:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .sku-swatch:hover .sku-num{opacity:1}
 .sku-add-btn{
@@ -1709,7 +1710,262 @@ const products = [
       "Editorial Brands",
       "Social Media Influencer Pieces"
     ],
-    "customization": "Recolor to your brand palette (rose-gold, jet-black, emerald) · Custom print scale · Co-branded selvedge label · 7-10 day sampling"
+    "customization": "Recolor to your brand palette (rose-gold, jet-black, emerald) · Custom print scale · Co-branded selvedge label · 7-10 day sampling",
+    "skuColors": [
+      {
+        "no": "01",
+        "name": "Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/H088544c4434a4f8cb3a1eba6fd0c5852D.jpg"
+      },
+      {
+        "no": "02",
+        "name": "Raven Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha516a70ea0354b2fade165179609694aX.jpg"
+      },
+      {
+        "no": "03",
+        "name": "Mint Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2c482bb60c5f4f358aa03add5a398388f.jpg"
+      },
+      {
+        "no": "04",
+        "name": "Onyx Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H38fc86e037654d62987054a1b7c71e9be.jpg"
+      },
+      {
+        "no": "05",
+        "name": "Light Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9f1c6387b0cf46e6900dac3f70f940fc5.jpg"
+      },
+      {
+        "no": "06",
+        "name": "Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H4d0d7330f9584824b09e9882699fafba3.jpg"
+      },
+      {
+        "no": "07",
+        "name": "Periwinkle Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H4cd44e9807094b90999221b2d6c62511u.jpg"
+      },
+      {
+        "no": "08",
+        "name": "Denim Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H96ce08db6ca04a5da92a832bc7da8693K.jpg"
+      },
+      {
+        "no": "09",
+        "name": "Clover Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H50436df3623f4ef29fa22557692b43a4O.jpg"
+      },
+      {
+        "no": "10",
+        "name": "Tan Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hfeb684aac6c040c4b4f2b5853be526bdd.jpg"
+      },
+      {
+        "no": "11",
+        "name": "Apple Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hb5b8775402f24f91a84d0bb74deb9b56I.jpg"
+      },
+      {
+        "no": "12",
+        "name": "Eucalyptus Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H7aa5170b8c6b4604819b7f26180fd92dC.jpg"
+      },
+      {
+        "no": "13",
+        "name": "Obsidian Black",
+        "image": "https://s.alicdn.com/@sc04/kf/He3db672b8daf4960b8e5801b61a812bd1.jpg"
+      },
+      {
+        "no": "14",
+        "name": "Chartreuse Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H39a1910961c24edab58611259d614989x.jpg"
+      },
+      {
+        "no": "15",
+        "name": "Fluorescent Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha065a60c414a4bfc8951b12a85794a9ec.jpg"
+      },
+      {
+        "no": "16",
+        "name": "Powder Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H85e29bab3a4a4a0bbfa8954caa9b1c7eZ.jpg"
+      },
+      {
+        "no": "17",
+        "name": "Garnet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H8600d9375f8e4655a6dd6cca965ddf6f8.jpg"
+      },
+      {
+        "no": "18",
+        "name": "Pinkish Red",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha861a01eca5c47bfa40b61b7e7ffb8389.jpg"
+      },
+      {
+        "no": "19",
+        "name": "Blackberry Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H5879017b58204436ac7b056fc58750fbi.jpg"
+      },
+      {
+        "no": "20",
+        "name": "Charcoal Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hffab2a5b609c4d50a0d6be898a887d36Y.png"
+      },
+      {
+        "no": "21",
+        "name": "Fern Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H432c018e9bfe46a783f8c461ce53f67du.jpg"
+      },
+      {
+        "no": "22",
+        "name": "Lichen Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H0afcec9dcdc3457eb9fe7f5bc148d1aeC.jpg"
+      },
+      {
+        "no": "23",
+        "name": "Celery Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hae429da7a34d4bdc997bbc73217bc60fx.jpg"
+      },
+      {
+        "no": "24",
+        "name": "Neutral Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/Heb17d925e6a64f73a84e546acc90f2399.jpg"
+      },
+      {
+        "no": "25",
+        "name": "Powder Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H8dd7574ed6454b978196dfb7d3d79088b.jpg"
+      },
+      {
+        "no": "26",
+        "name": "Vermilion Red",
+        "image": "https://s.alicdn.com/@sc04/kf/He2febdbb02144743b1032316d7a81fc0t.jpg"
+      },
+      {
+        "no": "27",
+        "name": "White",
+        "image": "https://s.alicdn.com/@sc04/kf/H5473ca46185a48a6a6e699bf6b0d8030W.jpg"
+      },
+      {
+        "no": "28",
+        "name": "Pastel Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/He75f2b8ff9f3415789b2cf684f228d3br.jpg"
+      },
+      {
+        "no": "29",
+        "name": "Forest Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H9578266c06d04c20ab6ef21c992ef4f9p.jpg"
+      },
+      {
+        "no": "30",
+        "name": "Lavender Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H6539bb8c50a84c149b4d556a91fc2f7aI.jpg"
+      },
+      {
+        "no": "31",
+        "name": "Pale Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd96f3ca477ae4307985c18ae45beb6e6i.jpg"
+      },
+      {
+        "no": "32",
+        "name": "Matte Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hdcf7d371481447f8a5bb3485d9d9a6a19.jpg"
+      },
+      {
+        "no": "33",
+        "name": "Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Hea50fa1b05ec4478b77071f734552da6c.jpg"
+      },
+      {
+        "no": "34",
+        "name": "Pebble Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Haa05765373ab40a9a21b4f909accc0706.jpg"
+      },
+      {
+        "no": "35",
+        "name": "Viridian Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H591d8731c1884ca8bbf6be28f3680b62o.jpg"
+      },
+      {
+        "no": "36",
+        "name": "Walnut Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H2627ef5ce4c14daf844e22bd99933f33l.jpg"
+      },
+      {
+        "no": "37",
+        "name": "Camel",
+        "image": "https://s.alicdn.com/@sc04/kf/H6908daaf46934240ab5b20815e0e5ddaS.jpg"
+      },
+      {
+        "no": "38",
+        "name": "Coral Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H1f4b9724a7b64c999cc0e546aca756d5a.jpg"
+      },
+      {
+        "no": "39",
+        "name": "Pitch Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha8a22f52b8f845ec8563d7b350ff0acdL.jpg"
+      },
+      {
+        "no": "40",
+        "name": "Cobalt Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9c70197957c3422490a5c80be5c99a17b.jpg"
+      },
+      {
+        "no": "41",
+        "name": "Khaki Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd707147e384c44ce875edac070d30eb2F.jpg"
+      },
+      {
+        "no": "42",
+        "name": "Emerald Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H751185c294ef4a8a90ebc8c6ac6923ad4.jpg"
+      },
+      {
+        "no": "43",
+        "name": "Light Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H9a3f85dda8ca45009c80400aa9ecaa43y.jpg"
+      },
+      {
+        "no": "44",
+        "name": "Spring Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2a3618c9028947fa8756d5687362ee87Y.jpg"
+      },
+      {
+        "no": "45",
+        "name": "Turquoise Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2f4e530a01764469a4553fbd2fb428caI.jpg"
+      },
+      {
+        "no": "46",
+        "name": "Russet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H542496cdcb5c4f53a9dd4e13d7738d818.jpg"
+      },
+      {
+        "no": "47",
+        "name": "Warm Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H5932ec625e6f41a38104567834c8a74eH.png"
+      },
+      {
+        "no": "48",
+        "name": "Sand Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha4d67919ff6241c9873f5c6b604ca66cV.jpg"
+      },
+      {
+        "no": "49",
+        "name": "Dusty Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H92a9fdaf2d3c4ddc8ddb77278807c7655.jpg"
+      },
+      {
+        "no": "50",
+        "name": "Dark Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H5fca7b133d114a51a200fa7339503927y.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/2025-Top-Selling-Customized-Modal-Hijab_1601625874584.html?spm=a2747.product_manager.0.0.263571d2JTzWK5",
+    "skuLabel": "50 Print/Color Variants",
+    "skuPriceNote": "From $4.90 (MOQ 100) · $5.20 sample"
   },
   {
     "name": "Luxury Ombré Gradient Modal Hijab Scarf — Champagne to Dusty Rose 180×90cm",
@@ -1734,7 +1990,262 @@ const products = [
       "Eid Special",
       "Instagram Boutiques"
     ],
-    "customization": "Custom gradient combinations (sunset, ocean, lavender, desert) · 2-tone or 3-tone options · Brand-colored gradient sets from 200 pcs"
+    "customization": "Custom gradient combinations (sunset, ocean, lavender, desert) · 2-tone or 3-tone options · Brand-colored gradient sets from 200 pcs",
+    "skuColors": [
+      {
+        "no": "01",
+        "name": "Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/H088544c4434a4f8cb3a1eba6fd0c5852D.jpg"
+      },
+      {
+        "no": "02",
+        "name": "Raven Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha516a70ea0354b2fade165179609694aX.jpg"
+      },
+      {
+        "no": "03",
+        "name": "Mint Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2c482bb60c5f4f358aa03add5a398388f.jpg"
+      },
+      {
+        "no": "04",
+        "name": "Onyx Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H38fc86e037654d62987054a1b7c71e9be.jpg"
+      },
+      {
+        "no": "05",
+        "name": "Light Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9f1c6387b0cf46e6900dac3f70f940fc5.jpg"
+      },
+      {
+        "no": "06",
+        "name": "Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H4d0d7330f9584824b09e9882699fafba3.jpg"
+      },
+      {
+        "no": "07",
+        "name": "Periwinkle Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H4cd44e9807094b90999221b2d6c62511u.jpg"
+      },
+      {
+        "no": "08",
+        "name": "Denim Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H96ce08db6ca04a5da92a832bc7da8693K.jpg"
+      },
+      {
+        "no": "09",
+        "name": "Clover Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H50436df3623f4ef29fa22557692b43a4O.jpg"
+      },
+      {
+        "no": "10",
+        "name": "Tan Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hfeb684aac6c040c4b4f2b5853be526bdd.jpg"
+      },
+      {
+        "no": "11",
+        "name": "Apple Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hb5b8775402f24f91a84d0bb74deb9b56I.jpg"
+      },
+      {
+        "no": "12",
+        "name": "Eucalyptus Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H7aa5170b8c6b4604819b7f26180fd92dC.jpg"
+      },
+      {
+        "no": "13",
+        "name": "Obsidian Black",
+        "image": "https://s.alicdn.com/@sc04/kf/He3db672b8daf4960b8e5801b61a812bd1.jpg"
+      },
+      {
+        "no": "14",
+        "name": "Chartreuse Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H39a1910961c24edab58611259d614989x.jpg"
+      },
+      {
+        "no": "15",
+        "name": "Fluorescent Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha065a60c414a4bfc8951b12a85794a9ec.jpg"
+      },
+      {
+        "no": "16",
+        "name": "Powder Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H85e29bab3a4a4a0bbfa8954caa9b1c7eZ.jpg"
+      },
+      {
+        "no": "17",
+        "name": "Garnet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H8600d9375f8e4655a6dd6cca965ddf6f8.jpg"
+      },
+      {
+        "no": "18",
+        "name": "Pinkish Red",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha861a01eca5c47bfa40b61b7e7ffb8389.jpg"
+      },
+      {
+        "no": "19",
+        "name": "Blackberry Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H5879017b58204436ac7b056fc58750fbi.jpg"
+      },
+      {
+        "no": "20",
+        "name": "Charcoal Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hffab2a5b609c4d50a0d6be898a887d36Y.png"
+      },
+      {
+        "no": "21",
+        "name": "Fern Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H432c018e9bfe46a783f8c461ce53f67du.jpg"
+      },
+      {
+        "no": "22",
+        "name": "Lichen Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H0afcec9dcdc3457eb9fe7f5bc148d1aeC.jpg"
+      },
+      {
+        "no": "23",
+        "name": "Celery Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hae429da7a34d4bdc997bbc73217bc60fx.jpg"
+      },
+      {
+        "no": "24",
+        "name": "Neutral Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/Heb17d925e6a64f73a84e546acc90f2399.jpg"
+      },
+      {
+        "no": "25",
+        "name": "Powder Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H8dd7574ed6454b978196dfb7d3d79088b.jpg"
+      },
+      {
+        "no": "26",
+        "name": "Vermilion Red",
+        "image": "https://s.alicdn.com/@sc04/kf/He2febdbb02144743b1032316d7a81fc0t.jpg"
+      },
+      {
+        "no": "27",
+        "name": "White",
+        "image": "https://s.alicdn.com/@sc04/kf/H5473ca46185a48a6a6e699bf6b0d8030W.jpg"
+      },
+      {
+        "no": "28",
+        "name": "Pastel Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/He75f2b8ff9f3415789b2cf684f228d3br.jpg"
+      },
+      {
+        "no": "29",
+        "name": "Forest Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H9578266c06d04c20ab6ef21c992ef4f9p.jpg"
+      },
+      {
+        "no": "30",
+        "name": "Lavender Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H6539bb8c50a84c149b4d556a91fc2f7aI.jpg"
+      },
+      {
+        "no": "31",
+        "name": "Pale Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd96f3ca477ae4307985c18ae45beb6e6i.jpg"
+      },
+      {
+        "no": "32",
+        "name": "Matte Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hdcf7d371481447f8a5bb3485d9d9a6a19.jpg"
+      },
+      {
+        "no": "33",
+        "name": "Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Hea50fa1b05ec4478b77071f734552da6c.jpg"
+      },
+      {
+        "no": "34",
+        "name": "Pebble Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Haa05765373ab40a9a21b4f909accc0706.jpg"
+      },
+      {
+        "no": "35",
+        "name": "Viridian Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H591d8731c1884ca8bbf6be28f3680b62o.jpg"
+      },
+      {
+        "no": "36",
+        "name": "Walnut Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H2627ef5ce4c14daf844e22bd99933f33l.jpg"
+      },
+      {
+        "no": "37",
+        "name": "Camel",
+        "image": "https://s.alicdn.com/@sc04/kf/H6908daaf46934240ab5b20815e0e5ddaS.jpg"
+      },
+      {
+        "no": "38",
+        "name": "Coral Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H1f4b9724a7b64c999cc0e546aca756d5a.jpg"
+      },
+      {
+        "no": "39",
+        "name": "Pitch Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha8a22f52b8f845ec8563d7b350ff0acdL.jpg"
+      },
+      {
+        "no": "40",
+        "name": "Cobalt Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9c70197957c3422490a5c80be5c99a17b.jpg"
+      },
+      {
+        "no": "41",
+        "name": "Khaki Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd707147e384c44ce875edac070d30eb2F.jpg"
+      },
+      {
+        "no": "42",
+        "name": "Emerald Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H751185c294ef4a8a90ebc8c6ac6923ad4.jpg"
+      },
+      {
+        "no": "43",
+        "name": "Light Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H9a3f85dda8ca45009c80400aa9ecaa43y.jpg"
+      },
+      {
+        "no": "44",
+        "name": "Spring Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2a3618c9028947fa8756d5687362ee87Y.jpg"
+      },
+      {
+        "no": "45",
+        "name": "Turquoise Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2f4e530a01764469a4553fbd2fb428caI.jpg"
+      },
+      {
+        "no": "46",
+        "name": "Russet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H542496cdcb5c4f53a9dd4e13d7738d818.jpg"
+      },
+      {
+        "no": "47",
+        "name": "Warm Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H5932ec625e6f41a38104567834c8a74eH.png"
+      },
+      {
+        "no": "48",
+        "name": "Sand Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha4d67919ff6241c9873f5c6b604ca66cV.jpg"
+      },
+      {
+        "no": "49",
+        "name": "Dusty Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H92a9fdaf2d3c4ddc8ddb77278807c7655.jpg"
+      },
+      {
+        "no": "50",
+        "name": "Dark Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H5fca7b133d114a51a200fa7339503927y.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/2025-Top-Selling-Customized-Modal-Hijab_1601625874584.html?spm=a2747.product_manager.0.0.263571d2JTzWK5",
+    "skuLabel": "50 Print/Color Variants",
+    "skuPriceNote": "From $4.90 (MOQ 100) · $5.20 sample"
   },
   {
     "name": "Classic Polka Dot Modal Hijab Scarf — Camel & Cream Parisian Style 180×90cm",
@@ -1759,7 +2270,262 @@ const products = [
       "Mother-Daughter Twinning",
       "Classic Boutique Retail"
     ],
-    "customization": "Dot size variants (4mm/6mm/8mm) · 12+ color combinations (black/white, navy/cream, burgundy/blush) · Co-branded packaging"
+    "customization": "Dot size variants (4mm/6mm/8mm) · 12+ color combinations (black/white, navy/cream, burgundy/blush) · Co-branded packaging",
+    "skuColors": [
+      {
+        "no": "01",
+        "name": "Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/H088544c4434a4f8cb3a1eba6fd0c5852D.jpg"
+      },
+      {
+        "no": "02",
+        "name": "Raven Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha516a70ea0354b2fade165179609694aX.jpg"
+      },
+      {
+        "no": "03",
+        "name": "Mint Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2c482bb60c5f4f358aa03add5a398388f.jpg"
+      },
+      {
+        "no": "04",
+        "name": "Onyx Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H38fc86e037654d62987054a1b7c71e9be.jpg"
+      },
+      {
+        "no": "05",
+        "name": "Light Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9f1c6387b0cf46e6900dac3f70f940fc5.jpg"
+      },
+      {
+        "no": "06",
+        "name": "Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H4d0d7330f9584824b09e9882699fafba3.jpg"
+      },
+      {
+        "no": "07",
+        "name": "Periwinkle Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H4cd44e9807094b90999221b2d6c62511u.jpg"
+      },
+      {
+        "no": "08",
+        "name": "Denim Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H96ce08db6ca04a5da92a832bc7da8693K.jpg"
+      },
+      {
+        "no": "09",
+        "name": "Clover Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H50436df3623f4ef29fa22557692b43a4O.jpg"
+      },
+      {
+        "no": "10",
+        "name": "Tan Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hfeb684aac6c040c4b4f2b5853be526bdd.jpg"
+      },
+      {
+        "no": "11",
+        "name": "Apple Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hb5b8775402f24f91a84d0bb74deb9b56I.jpg"
+      },
+      {
+        "no": "12",
+        "name": "Eucalyptus Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H7aa5170b8c6b4604819b7f26180fd92dC.jpg"
+      },
+      {
+        "no": "13",
+        "name": "Obsidian Black",
+        "image": "https://s.alicdn.com/@sc04/kf/He3db672b8daf4960b8e5801b61a812bd1.jpg"
+      },
+      {
+        "no": "14",
+        "name": "Chartreuse Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H39a1910961c24edab58611259d614989x.jpg"
+      },
+      {
+        "no": "15",
+        "name": "Fluorescent Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha065a60c414a4bfc8951b12a85794a9ec.jpg"
+      },
+      {
+        "no": "16",
+        "name": "Powder Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H85e29bab3a4a4a0bbfa8954caa9b1c7eZ.jpg"
+      },
+      {
+        "no": "17",
+        "name": "Garnet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H8600d9375f8e4655a6dd6cca965ddf6f8.jpg"
+      },
+      {
+        "no": "18",
+        "name": "Pinkish Red",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha861a01eca5c47bfa40b61b7e7ffb8389.jpg"
+      },
+      {
+        "no": "19",
+        "name": "Blackberry Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H5879017b58204436ac7b056fc58750fbi.jpg"
+      },
+      {
+        "no": "20",
+        "name": "Charcoal Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hffab2a5b609c4d50a0d6be898a887d36Y.png"
+      },
+      {
+        "no": "21",
+        "name": "Fern Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H432c018e9bfe46a783f8c461ce53f67du.jpg"
+      },
+      {
+        "no": "22",
+        "name": "Lichen Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H0afcec9dcdc3457eb9fe7f5bc148d1aeC.jpg"
+      },
+      {
+        "no": "23",
+        "name": "Celery Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hae429da7a34d4bdc997bbc73217bc60fx.jpg"
+      },
+      {
+        "no": "24",
+        "name": "Neutral Brown",
+        "image": "https://s.alicdn.com/@sc04/kf/Heb17d925e6a64f73a84e546acc90f2399.jpg"
+      },
+      {
+        "no": "25",
+        "name": "Powder Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H8dd7574ed6454b978196dfb7d3d79088b.jpg"
+      },
+      {
+        "no": "26",
+        "name": "Vermilion Red",
+        "image": "https://s.alicdn.com/@sc04/kf/He2febdbb02144743b1032316d7a81fc0t.jpg"
+      },
+      {
+        "no": "27",
+        "name": "White",
+        "image": "https://s.alicdn.com/@sc04/kf/H5473ca46185a48a6a6e699bf6b0d8030W.jpg"
+      },
+      {
+        "no": "28",
+        "name": "Pastel Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/He75f2b8ff9f3415789b2cf684f228d3br.jpg"
+      },
+      {
+        "no": "29",
+        "name": "Forest Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H9578266c06d04c20ab6ef21c992ef4f9p.jpg"
+      },
+      {
+        "no": "30",
+        "name": "Lavender Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H6539bb8c50a84c149b4d556a91fc2f7aI.jpg"
+      },
+      {
+        "no": "31",
+        "name": "Pale Green",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd96f3ca477ae4307985c18ae45beb6e6i.jpg"
+      },
+      {
+        "no": "32",
+        "name": "Matte Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Hdcf7d371481447f8a5bb3485d9d9a6a19.jpg"
+      },
+      {
+        "no": "33",
+        "name": "Yellow",
+        "image": "https://s.alicdn.com/@sc04/kf/Hea50fa1b05ec4478b77071f734552da6c.jpg"
+      },
+      {
+        "no": "34",
+        "name": "Pebble Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Haa05765373ab40a9a21b4f909accc0706.jpg"
+      },
+      {
+        "no": "35",
+        "name": "Viridian Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H591d8731c1884ca8bbf6be28f3680b62o.jpg"
+      },
+      {
+        "no": "36",
+        "name": "Walnut Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H2627ef5ce4c14daf844e22bd99933f33l.jpg"
+      },
+      {
+        "no": "37",
+        "name": "Camel",
+        "image": "https://s.alicdn.com/@sc04/kf/H6908daaf46934240ab5b20815e0e5ddaS.jpg"
+      },
+      {
+        "no": "38",
+        "name": "Coral Pink",
+        "image": "https://s.alicdn.com/@sc04/kf/H1f4b9724a7b64c999cc0e546aca756d5a.jpg"
+      },
+      {
+        "no": "39",
+        "name": "Pitch Black",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha8a22f52b8f845ec8563d7b350ff0acdL.jpg"
+      },
+      {
+        "no": "40",
+        "name": "Cobalt Blue",
+        "image": "https://s.alicdn.com/@sc04/kf/H9c70197957c3422490a5c80be5c99a17b.jpg"
+      },
+      {
+        "no": "41",
+        "name": "Khaki Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Hd707147e384c44ce875edac070d30eb2F.jpg"
+      },
+      {
+        "no": "42",
+        "name": "Emerald Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H751185c294ef4a8a90ebc8c6ac6923ad4.jpg"
+      },
+      {
+        "no": "43",
+        "name": "Light Purple",
+        "image": "https://s.alicdn.com/@sc04/kf/H9a3f85dda8ca45009c80400aa9ecaa43y.jpg"
+      },
+      {
+        "no": "44",
+        "name": "Spring Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2a3618c9028947fa8756d5687362ee87Y.jpg"
+      },
+      {
+        "no": "45",
+        "name": "Turquoise Green",
+        "image": "https://s.alicdn.com/@sc04/kf/H2f4e530a01764469a4553fbd2fb428caI.jpg"
+      },
+      {
+        "no": "46",
+        "name": "Russet Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H542496cdcb5c4f53a9dd4e13d7738d818.jpg"
+      },
+      {
+        "no": "47",
+        "name": "Warm Red",
+        "image": "https://s.alicdn.com/@sc04/kf/H5932ec625e6f41a38104567834c8a74eH.png"
+      },
+      {
+        "no": "48",
+        "name": "Sand Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/Ha4d67919ff6241c9873f5c6b604ca66cV.jpg"
+      },
+      {
+        "no": "49",
+        "name": "Dusty Beige",
+        "image": "https://s.alicdn.com/@sc04/kf/H92a9fdaf2d3c4ddc8ddb77278807c7655.jpg"
+      },
+      {
+        "no": "50",
+        "name": "Dark Black",
+        "image": "https://s.alicdn.com/@sc04/kf/H5fca7b133d114a51a200fa7339503927y.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/2025-Top-Selling-Customized-Modal-Hijab_1601625874584.html?spm=a2747.product_manager.0.0.263571d2JTzWK5",
+    "skuLabel": "50 Print/Color Variants",
+    "skuPriceNote": "From $4.90 (MOQ 100) · $5.20 sample"
   },
   {
     "name": "Customized Superior Quality Natural OEKO-TEX Certified Fibres Recycled Breathable Eco-Friendly Bamboo Jersey Shawl Hijab",
@@ -2191,20 +2957,21 @@ function renderProducts(){
 function basketHasProduct(id){
   return Object.values(quoteBasket).some(it => it.productId === id);
 }
-function addSkuToBasket(productId, skuNo, skuImage){
+function addSkuToBasket(productId, skuNo, skuImage, skuName){
   const key = productId + '::' + skuNo;
+  const label = skuName ? skuName : 'Color #' + skuNo;
   if(quoteBasket[key]){
-    showToast('Color #' + skuNo + ' already in basket');
+    showToast(label + ' already in basket');
     return;
   }
   const p = products[productId];
   const defaultQty = p.moq.match(/\d+/)?.[0] || 100;
-  quoteBasket[key] = {productId, qty: defaultQty, sku: skuNo, skuImage};
+  quoteBasket[key] = {productId, qty: defaultQty, sku: skuNo, skuImage, skuName: skuName||''};
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   updateBadge();
   renderProducts();
   renderDrawer();
-  showToast('✓ Color #' + skuNo + ' added — ' + defaultQty + ' pcs');
+  showToast('✓ ' + label + ' added — ' + defaultQty + ' pcs');
 }
 function removeBasketKey(key){
   delete quoteBasket[key];
@@ -2340,12 +3107,14 @@ function renderDrawer(){
         <button class="quote-group-remove-all" onclick="removeAllVariants(${pid})" title="Remove all variants">×</button>
       </div>
       <div class="quote-variants">
-        ${colorEntries.map(e => `
+        ${colorEntries.map(e => {
+          const dispName = e.item.skuName || ('Color #' + e.item.sku);
+          return `
           <div class="variant-row">
-            <img class="variant-thumb" src="${e.item.skuImage}" alt="Color ${e.item.sku}"
-                 onclick="openSku('${e.item.skuImage}','#${e.item.sku}')" title="Click to enlarge">
+            <img class="variant-thumb" src="${e.item.skuImage}" alt="${dispName}"
+                 onclick="openSku('${e.item.skuImage}','${dispName}')" title="Click to enlarge">
             <div class="variant-info">
-              <div class="variant-label">Color <strong>#${e.item.sku}</strong></div>
+              <div class="variant-label">${e.item.skuName ? `<strong>${e.item.skuName}</strong> · #${e.item.sku}` : `Color <strong>#${e.item.sku}</strong>`}</div>
               <div class="qty-control qty-control-sm">
                 <button class="qty-btn" onclick="updateQty('${e.key}',-50)">−</button>
                 <input class="qty-input" type="number" value="${e.item.qty}" onchange="setQty('${e.key}',this.value)" min="1">
@@ -2353,8 +3122,8 @@ function renderDrawer(){
               </div>
             </div>
             <button class="variant-remove" onclick="removeBasketKey('${e.key}')" title="Remove this color">×</button>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
         <button class="add-more-colors" onclick="closeDrawer();openDetails(${pid});setTimeout(()=>{const g=document.querySelector('.detail-modal .sku-grid');if(g)g.scrollIntoView({behavior:'smooth',block:'center'})},350)">
           + Add another color
         </button>
@@ -2393,7 +3162,7 @@ function submitQuoteWhatsApp(){
   keys.forEach((key,i) => {
     const item = quoteBasket[key];
     const p = products[item.productId];
-    const skuLine = item.sku ? `   Color: #${item.sku}\n` : '';
+    const skuLine = item.sku ? `   Color: ${item.skuName ? item.skuName+' (#'+item.sku+')' : '#'+item.sku}\n` : '';
     msg += `${i+1}. ${p.name}\n   Category: ${p.category}\n${skuLine}   Quantity: ${item.qty} pcs\n   Link: ${p.url}\n\n`;
   });
   msg += `Please send me your best quotation including shipping options.\n\nThank you.`;
@@ -2407,7 +3176,7 @@ function submitQuote(){
   keys.forEach((key,i) => {
     const item = quoteBasket[key];
     const p = products[item.productId];
-    const skuLine = item.sku ? `   Color: #${item.sku}%0D%0A` : '';
+    const skuLine = item.sku ? `   Color: ${item.skuName ? item.skuName+' (#'+item.sku+')' : '#'+item.sku}%0D%0A` : '';
     body += `${i+1}. ${p.name}%0D%0A   Category: ${p.category}%0D%0A${skuLine}   Quantity: ${item.qty} pcs%0D%0A   Link: ${p.url}%0D%0A%0D%0A`;
   });
   body += `Please send me your best quotation including shipping options.%0D%0A%0D%0AThank you.`;
@@ -2421,7 +3190,7 @@ function exportCSV(){
   keys.forEach(key => {
     const item = quoteBasket[key];
     const p = products[item.productId];
-    const sku = item.sku ? `#${item.sku}` : '-';
+    const sku = item.sku ? (item.skuName ? `${item.skuName} (#${item.sku})` : `#${item.sku}`) : '-';
     csv += `"${p.name}","${p.category}","${p.material}","${sku}","${p.moq}","${p.price}","${item.qty}","${p.url}"\n`;
   });
   const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
@@ -2499,11 +3268,13 @@ function openDetails(id){
           ${p.skuColors.map(s => {
             const key = id + '::' + s.no;
             const inBag = quoteBasket[key];
+            const nameAttr = s.name ? ` — ${s.name.replace(/"/g,'&quot;')}` : '';
+            const nameArg = s.name ? `,'${s.name.replace(/'/g,"\\'")}'` : `,''`;
             return `
-            <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no} — click to enlarge">
-              <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id})">
-              <span class="sku-num">#${s.no}</span>
-              <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}')" title="Add this color to basket">${inBag?'✓':'+'}</button>
+            <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no}${nameAttr} — click to enlarge">
+              <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id}${nameArg})">
+              <span class="sku-num">${s.name ? s.name : '#'+s.no}</span>
+              <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg})" title="Add ${s.name||'Color #'+s.no} to basket">${inBag?'✓':'+'}</button>
             </div>`;
           }).join('')}
         </div>
@@ -2607,9 +3378,9 @@ function openSku(imgUrl, label){
   document.getElementById('skuLightbox').classList.add('open');
   currentSkuContext = null;
 }
-function openSkuWithAdd(imgUrl, skuNo, productId){
+function openSkuWithAdd(imgUrl, skuNo, productId, skuName){
   document.getElementById('skuLightboxImg').src = imgUrl;
-  document.getElementById('skuLightboxLabel').textContent = 'Color #' + skuNo;
+  document.getElementById('skuLightboxLabel').textContent = skuName ? (skuName + ' (#' + skuNo + ')') : ('Color #' + skuNo);
   const btn = document.getElementById('skuLightboxAdd');
   btn.style.display = '';
   const key = productId + '::' + skuNo;
@@ -2617,16 +3388,16 @@ function openSkuWithAdd(imgUrl, skuNo, productId){
     btn.textContent = '✓ Already in basket — Add another';
     btn.classList.add('added');
   } else {
-    btn.textContent = '+ Add this color to basket';
+    btn.textContent = '+ Add ' + (skuName || 'this color') + ' to basket';
     btn.classList.remove('added');
   }
-  currentSkuContext = {productId, skuNo, image: imgUrl};
+  currentSkuContext = {productId, skuNo, image: imgUrl, name: skuName||''};
   document.getElementById('skuLightbox').classList.add('open');
 }
 function addCurrentSkuToBasket(){
   if(!currentSkuContext) return;
-  const {productId, skuNo, image} = currentSkuContext;
-  addSkuToBasket(productId, skuNo, image);
+  const {productId, skuNo, image, name} = currentSkuContext;
+  addSkuToBasket(productId, skuNo, image, name);
   closeSku();
 }
 function closeSku(){
