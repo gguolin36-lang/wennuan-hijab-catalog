@@ -249,6 +249,13 @@ header{
   letter-spacing:0.5px;text-transform:uppercase;
   backdrop-filter:blur(8px);
 }
+.sku-count-badge{
+  position:absolute;top:12px;right:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:#fff;padding:4px 10px;border-radius:12px;
+  font-size:11px;font-weight:700;letter-spacing:0.3px;
+  box-shadow:0 4px 12px rgba(201,168,76,0.35);
+}
 .product-info{padding:20px;flex:1;display:flex;flex-direction:column}
 .product-name{
   font-family:'Playfair Display',serif;
@@ -416,7 +423,7 @@ header{
 }
 .sku-swatch{
   position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;
-  cursor:pointer;transition:all 0.25s ease;
+  transition:all 0.25s ease;
   border:2px solid transparent;background:var(--white);
 }
 .sku-swatch:hover{
@@ -425,20 +432,46 @@ header{
   box-shadow:0 6px 16px rgba(0,0,0,0.15);
   z-index:2;
 }
+.sku-swatch.in-basket{border-color:#2E7D32;box-shadow:0 0 0 1px #2E7D32 inset}
 .sku-swatch img{
   width:100%;height:100%;object-fit:cover;display:block;
+  cursor:zoom-in;
 }
 .sku-num{
   position:absolute;bottom:0;left:0;right:0;
   background:linear-gradient(transparent,rgba(0,0,0,0.65));
   color:#fff;font-size:10px;font-weight:600;text-align:center;
   padding:8px 2px 3px;letter-spacing:0.3px;
-  opacity:0;transition:opacity 0.2s;
+  opacity:0;transition:opacity 0.2s;pointer-events:none;
 }
 .sku-swatch:hover .sku-num{opacity:1}
+.sku-add-btn{
+  position:absolute;top:4px;right:4px;
+  width:22px;height:22px;border-radius:50%;border:none;
+  background:var(--gold);color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;line-height:1;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  opacity:0;transform:scale(0.5);
+  transition:all 0.2s ease;
+}
+.sku-swatch:hover .sku-add-btn{opacity:1;transform:scale(1)}
+.sku-swatch.in-basket .sku-add-btn{
+  opacity:1;transform:scale(1);background:#2E7D32;
+}
+.sku-add-btn:hover{background:var(--gold-dark);transform:scale(1.15) !important}
+.sku-swatch.in-basket .sku-add-btn:hover{background:#1B5E20}
+
+.sku-badge-inline{
+  display:inline-block;background:var(--cream-dark);color:var(--brown);
+  font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;
+  margin:4px 0;letter-spacing:0.3px;
+}
+
 @media (max-width:600px){
   .sku-grid{grid-template-columns:repeat(5,1fr);gap:6px}
   .sku-num{font-size:9px;opacity:1}
+  .sku-add-btn{opacity:1;transform:scale(1);width:20px;height:20px;font-size:13px}
 }
 
 /* === SKU Lightbox === */
@@ -458,6 +491,20 @@ header{
   position:absolute;bottom:-44px;left:50%;transform:translateX(-50%);
   background:var(--gold);color:#fff;padding:8px 24px;border-radius:20px;
   font-weight:600;letter-spacing:1px;white-space:nowrap;font-size:14px;
+}
+.sku-lightbox-add{
+  position:absolute;bottom:-95px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#2E7D32,#1B5E20);
+  color:#fff;border:none;padding:12px 28px;border-radius:30px;
+  font-weight:600;font-size:14px;cursor:pointer;letter-spacing:0.3px;
+  box-shadow:0 6px 18px rgba(46,125,50,0.4);
+  white-space:nowrap;transition:all 0.2s;
+}
+.sku-lightbox-add:hover{transform:translateX(-50%) translateY(-2px);box-shadow:0 10px 24px rgba(46,125,50,0.55)}
+.sku-lightbox-add.added{background:linear-gradient(135deg,var(--gold),var(--gold-dark));box-shadow:0 6px 18px rgba(201,168,76,0.4)}
+@media (max-width:600px){
+  .sku-lightbox-label{font-size:12px;padding:6px 18px}
+  .sku-lightbox-add{font-size:13px;padding:10px 20px;bottom:-85px}
 }
 .sku-lightbox-close{
   position:absolute;top:-50px;right:0;
@@ -737,10 +784,11 @@ footer{
 </div>
 
 <!-- SKU Lightbox -->
-<div class="sku-lightbox" id="skuLightbox" onclick="closeSku()">
-  <div class="sku-lightbox-inner">
+<div class="sku-lightbox" id="skuLightbox" onclick="if(event.target===this)closeSku()">
+  <div class="sku-lightbox-inner" onclick="event.stopPropagation()">
     <img id="skuLightboxImg" src="" alt="">
     <div class="sku-lightbox-label" id="skuLightboxLabel"></div>
+    <button class="sku-lightbox-add" id="skuLightboxAdd" onclick="addCurrentSkuToBasket()">+ Add this color to basket</button>
     <button class="sku-lightbox-close" onclick="closeSku()">×</button>
   </div>
 </div>
@@ -1742,6 +1790,13 @@ const products = [
 const categories = ['All','Solid Modal','Printed Modal','Bamboo Jersey','Premium Jersey','Cotton Jersey','Liquid Jersey','Instant Cap'];
 let currentFilter = 'All';
 let quoteBasket = JSON.parse(localStorage.getItem('quoteBasket') || '{}');
+// Migrate legacy entries: old format {id: {qty}} -> new format {key: {productId, qty, sku?, skuImage?}}
+Object.keys(quoteBasket).forEach(k => {
+  if(!quoteBasket[k].productId){
+    quoteBasket[k] = {productId: parseInt(k), qty: quoteBasket[k].qty};
+  }
+});
+localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
 
 function renderFilters(){
   const bar = document.getElementById('filterBar');
@@ -1762,12 +1817,15 @@ function renderProducts(){
   const filtered = currentFilter === 'All' ? products : products.filter(p => p.category === currentFilter);
   grid.innerHTML = filtered.map((p,i) => {
     const id = products.indexOf(p);
-    const inBasket = quoteBasket[id];
+    const hasSku = p.skuColors && p.skuColors.length;
+    const inBasket = hasSku ? basketHasProduct(id) : quoteBasket[id];
+    const variantCount = hasSku ? Object.values(quoteBasket).filter(it=>it.productId===id).length : 0;
     return `
     <div class="product-card">
       <div class="product-img-wrap">
         <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#EDE4CE,#C9A84C)';this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23EDE4CE%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23C9A84C%22 font-family=%22serif%22 font-size=%2220%22%3EHijab%3C/text%3E%3C/svg%3E'">
         <span class="product-badge">${p.category}</span>
+        ${hasSku ? `<span class="sku-count-badge" title="${p.skuColors.length} colors available">🎨 ${p.skuColors.length} colors</span>` : ''}
       </div>
       <div class="product-info">
         <h3 class="product-name">${p.name}</h3>
@@ -1778,7 +1836,9 @@ function renderProducts(){
         <div class="product-price">${p.price}</div>
         <div class="product-actions">
           <button class="btn-add ${inBasket?'added':''}" onclick="toggleBasket(${id})">
-            ${inBasket ? '✓ Added' : '+ Quote'}
+            ${hasSku
+              ? (inBasket ? `✓ ${variantCount} color${variantCount>1?'s':''}` : '🎨 Choose Color')
+              : (inBasket ? '✓ Added' : '+ Quote')}
           </button>
           <button class="btn-details" onclick="openDetails(${id})" title="View full details">📖 Details</button>
           <a class="btn-view" href="${p.url}" target="_blank" rel="noopener" title="Alibaba page">↗</a>
@@ -1788,12 +1848,63 @@ function renderProducts(){
   }).join('');
 }
 
+function basketHasProduct(id){
+  return Object.values(quoteBasket).some(it => it.productId === id);
+}
+function addSkuToBasket(productId, skuNo, skuImage){
+  const key = productId + '::' + skuNo;
+  if(quoteBasket[key]){
+    showToast('Color #' + skuNo + ' already in basket');
+    return;
+  }
+  const p = products[productId];
+  const defaultQty = p.moq.match(/\d+/)?.[0] || 100;
+  quoteBasket[key] = {productId, qty: defaultQty, sku: skuNo, skuImage};
+  localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
+  updateBadge();
+  renderProducts();
+  renderDrawer();
+  showToast('✓ Color #' + skuNo + ' added — ' + defaultQty + ' pcs');
+}
+function removeBasketKey(key){
+  delete quoteBasket[key];
+  localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
+  updateBadge();
+  renderProducts();
+  renderDrawer();
+  showToast('Removed from basket');
+}
 function toggleBasket(id){
+  // For Solid Modal: open details modal instead so user must pick a color
+  const p = products[id];
+  if(p && p.skuColors && p.skuColors.length){
+    if(basketHasProduct(id)){
+      // Remove ALL color variants of this product
+      Object.keys(quoteBasket).forEach(k => {
+        if(quoteBasket[k].productId === id) delete quoteBasket[k];
+      });
+      localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
+      updateBadge();
+      renderProducts();
+      renderDrawer();
+      showToast('All color variants removed');
+    } else {
+      // Open details so user picks color
+      openDetails(id);
+      setTimeout(() => {
+        const grid = document.querySelector('.detail-modal .sku-grid');
+        if(grid) grid.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 300);
+      showToast('👇 Please choose a color first');
+    }
+    return;
+  }
+  // Non-SKU products: legacy behavior
   if(quoteBasket[id]){
     delete quoteBasket[id];
     showToast('Removed from basket');
   } else {
-    quoteBasket[id] = {qty: products[id].moq.match(/\d+/)?.[0] || 100};
+    quoteBasket[id] = {productId: id, qty: products[id].moq.match(/\d+/)?.[0] || 100};
     showToast('Added to quote basket');
   }
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
@@ -1818,8 +1929,8 @@ function closeDrawer(){
 
 function renderDrawer(){
   const body = document.getElementById('drawerBody');
-  const ids = Object.keys(quoteBasket);
-  if(ids.length === 0){
+  const keys = Object.keys(quoteBasket);
+  if(keys.length === 0){
     body.innerHTML = `
       <div class="drawer-empty">
         <div class="drawer-empty-icon">🛍️</div>
@@ -1828,69 +1939,81 @@ function renderDrawer(){
       </div>`;
     return;
   }
-  body.innerHTML = ids.map(id => {
-    const p = products[id];
-    const item = quoteBasket[id];
+  body.innerHTML = keys.map(key => {
+    const item = quoteBasket[key];
+    const p = products[item.productId];
+    if(!p) return '';
+    const displayImg = item.skuImage || p.image;
+    const skuBadge = item.sku
+      ? `<span class="sku-badge-inline">🎨 Color #${item.sku}</span>`
+      : '';
     return `
     <div class="quote-item">
-      <img class="quote-item-img" src="${p.image}" alt="">
+      <img class="quote-item-img" src="${displayImg}" alt="" ${item.sku?`onclick="openSku('${item.skuImage}','#${item.sku}')" style="cursor:zoom-in"`:''}>
       <div class="quote-item-info">
         <div class="quote-item-name">${p.name}</div>
         <div class="quote-item-meta">${p.category} · ${p.price}</div>
+        ${skuBadge}
         <div class="qty-control">
-          <button class="qty-btn" onclick="updateQty(${id},-50)">−</button>
-          <input class="qty-input" type="number" value="${item.qty}" onchange="setQty(${id},this.value)" min="1">
+          <button class="qty-btn" onclick="updateQty('${key}',-50)">−</button>
+          <input class="qty-input" type="number" value="${item.qty}" onchange="setQty('${key}',this.value)" min="1">
           <span style="font-size:11px;color:var(--brown-light)">pcs</span>
         </div>
       </div>
-      <button class="quote-item-remove" onclick="toggleBasket(${id})" title="Remove">×</button>
+      <button class="quote-item-remove" onclick="removeBasketKey('${key}')" title="Remove">×</button>
     </div>`;
   }).join('');
 }
 
-function updateQty(id,delta){
-  const current = parseInt(quoteBasket[id].qty);
+function updateQty(key,delta){
+  const current = parseInt(quoteBasket[key].qty);
   const newQty = Math.max(1, current + delta);
-  quoteBasket[id].qty = newQty;
+  quoteBasket[key].qty = newQty;
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   renderDrawer();
 }
-function setQty(id,val){
-  quoteBasket[id].qty = Math.max(1,parseInt(val)||1);
+function setQty(key,val){
+  quoteBasket[key].qty = Math.max(1,parseInt(val)||1);
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
 }
 
 function submitQuoteWhatsApp(){
-  const ids = Object.keys(quoteBasket);
-  if(ids.length === 0){ showToast('Basket is empty'); return; }
+  const keys = Object.keys(quoteBasket);
+  if(keys.length === 0){ showToast('Basket is empty'); return; }
   let msg = `Hello Wennuan Team,\n\nI am interested in the following products:\n\n`;
-  ids.forEach((id,i) => {
-    const p = products[id];
-    msg += `${i+1}. ${p.name}\n   Category: ${p.category}\n   Quantity: ${quoteBasket[id].qty} pcs\n   Link: ${p.url}\n\n`;
+  keys.forEach((key,i) => {
+    const item = quoteBasket[key];
+    const p = products[item.productId];
+    const skuLine = item.sku ? `   Color: #${item.sku}\n` : '';
+    msg += `${i+1}. ${p.name}\n   Category: ${p.category}\n${skuLine}   Quantity: ${item.qty} pcs\n   Link: ${p.url}\n\n`;
   });
   msg += `Please send me your best quotation including shipping options.\n\nThank you.`;
   window.open(`https://wa.me/8615024597561?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 function submitQuote(){
-  const ids = Object.keys(quoteBasket);
-  if(ids.length === 0){ showToast('Basket is empty'); return; }
+  const keys = Object.keys(quoteBasket);
+  if(keys.length === 0){ showToast('Basket is empty'); return; }
   let body = `Hello Wennuan Team,%0D%0A%0D%0AI am interested in the following products:%0D%0A%0D%0A`;
-  ids.forEach((id,i) => {
-    const p = products[id];
-    body += `${i+1}. ${p.name}%0D%0A   Category: ${p.category}%0D%0A   Quantity: ${quoteBasket[id].qty} pcs%0D%0A   Link: ${p.url}%0D%0A%0D%0A`;
+  keys.forEach((key,i) => {
+    const item = quoteBasket[key];
+    const p = products[item.productId];
+    const skuLine = item.sku ? `   Color: #${item.sku}%0D%0A` : '';
+    body += `${i+1}. ${p.name}%0D%0A   Category: ${p.category}%0D%0A${skuLine}   Quantity: ${item.qty} pcs%0D%0A   Link: ${p.url}%0D%0A%0D%0A`;
   });
   body += `Please send me your best quotation including shipping options.%0D%0A%0D%0AThank you.`;
   window.location.href = `mailto:wennuan@wennuanfactory.com?subject=Quote Request - Wennuan Hijab Catalog&body=${body}`;
 }
 
 function exportCSV(){
-  const ids = Object.keys(quoteBasket);
-  if(ids.length === 0){ showToast('Basket is empty'); return; }
-  let csv = 'Product Name,Category,Material,MOQ,Price,Quantity,URL\n';
-  ids.forEach(id => {
-    const p = products[id];
-    csv += `"${p.name}","${p.category}","${p.material}","${p.moq}","${p.price}","${quoteBasket[id].qty}","${p.url}"\n`;
+  const keys = Object.keys(quoteBasket);
+  if(keys.length === 0){ showToast('Basket is empty'); return; }
+  let csv = 'Product Name,Category,Material,Color SKU,MOQ,Price,Quantity,URL\n';
+  keys.forEach(key => {
+    const item = quoteBasket[key];
+    const p = products[item.productId];
+    const sku = item.sku ? `#${item.sku}` : '-';
+    csv += `"${p.name}","${p.category}","${p.material}","${sku}","${p.moq}","${p.price}","${item.qty}","${p.url}"\n`;
   });
   const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const link = document.createElement('a');
@@ -1964,19 +2087,29 @@ function openDetails(id){
           ${p.skuSourceUrl ? `· <a href="${p.skuSourceUrl}" target="_blank" style="color:var(--gold-dark);font-weight:600;">View on Alibaba ↗</a>` : ''}
         </p>
         <div class="sku-grid">
-          ${p.skuColors.map(s => `
-            <div class="sku-swatch" onclick="openSku('${s.image}','#${s.no}')" title="Color #${s.no}">
-              <img src="${s.image}" alt="Color ${s.no}" loading="lazy">
+          ${p.skuColors.map(s => {
+            const key = id + '::' + s.no;
+            const inBag = quoteBasket[key];
+            return `
+            <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no} — click to enlarge">
+              <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id})">
               <span class="sku-num">#${s.no}</span>
-            </div>
-          `).join('')}
+              <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}')" title="Add this color to basket">${inBag?'✓':'+'}</button>
+            </div>`;
+          }).join('')}
         </div>
       </div>
       ` : ''}
 
       <div class="detail-actions">
         <button class="btn-copy-usp" onclick="copyUSP(${id})">📋 Copy Full USP</button>
-        <button class="btn-add-modal" onclick="toggleBasket(${id});closeDetails();">${inBasket?'✓ In Basket':'+ Add to Quote'}</button>
+        ${p.skuColors ? `
+          <button class="btn-add-modal" onclick="document.querySelector('.detail-modal .sku-grid').scrollIntoView({behavior:'smooth',block:'center'});showToast('👆 Click a color swatch to add');">
+            ${basketHasProduct(id)?'✓ Variants in Basket':'🎨 Choose Color to Add'}
+          </button>
+        ` : `
+          <button class="btn-add-modal" onclick="toggleBasket(${id});closeDetails();">${inBasket?'✓ In Basket':'+ Add to Quote'}</button>
+        `}
         <a class="btn-alibaba" href="${p.url}" target="_blank" rel="noopener">↗ View on Alibaba</a>
       </div>
     </div>`;
@@ -2057,10 +2190,35 @@ li{margin:6px 0}
 }
 
 // ===== SKU Lightbox =====
+let currentSkuContext = null; // {productId, skuNo, image}
 function openSku(imgUrl, label){
   document.getElementById('skuLightboxImg').src = imgUrl;
   document.getElementById('skuLightboxLabel').textContent = 'Color ' + label;
+  document.getElementById('skuLightboxAdd').style.display = 'none';
   document.getElementById('skuLightbox').classList.add('open');
+  currentSkuContext = null;
+}
+function openSkuWithAdd(imgUrl, skuNo, productId){
+  document.getElementById('skuLightboxImg').src = imgUrl;
+  document.getElementById('skuLightboxLabel').textContent = 'Color #' + skuNo;
+  const btn = document.getElementById('skuLightboxAdd');
+  btn.style.display = '';
+  const key = productId + '::' + skuNo;
+  if(quoteBasket[key]){
+    btn.textContent = '✓ Already in basket — Add another';
+    btn.classList.add('added');
+  } else {
+    btn.textContent = '+ Add this color to basket';
+    btn.classList.remove('added');
+  }
+  currentSkuContext = {productId, skuNo, image: imgUrl};
+  document.getElementById('skuLightbox').classList.add('open');
+}
+function addCurrentSkuToBasket(){
+  if(!currentSkuContext) return;
+  const {productId, skuNo, image} = currentSkuContext;
+  addSkuToBasket(productId, skuNo, image);
+  closeSku();
 }
 function closeSku(){
   document.getElementById('skuLightbox').classList.remove('open');
