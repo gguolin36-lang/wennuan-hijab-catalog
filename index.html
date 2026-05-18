@@ -408,6 +408,66 @@ header{
   .detail-headline{font-size:22px}
 }
 
+/* === SKU Color Chart === */
+.sku-grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:8px;
+  background:var(--cream);padding:14px;border-radius:12px;
+  border:1px solid rgba(201,168,76,0.18);
+}
+.sku-swatch{
+  position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;
+  cursor:pointer;transition:all 0.25s ease;
+  border:2px solid transparent;background:var(--white);
+}
+.sku-swatch:hover{
+  transform:translateY(-3px) scale(1.08);
+  border-color:var(--gold);
+  box-shadow:0 6px 16px rgba(0,0,0,0.15);
+  z-index:2;
+}
+.sku-swatch img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.sku-num{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,0.65));
+  color:#fff;font-size:10px;font-weight:600;text-align:center;
+  padding:8px 2px 3px;letter-spacing:0.3px;
+  opacity:0;transition:opacity 0.2s;
+}
+.sku-swatch:hover .sku-num{opacity:1}
+@media (max-width:600px){
+  .sku-grid{grid-template-columns:repeat(5,1fr);gap:6px}
+  .sku-num{font-size:9px;opacity:1}
+}
+
+/* === SKU Lightbox === */
+.sku-lightbox{
+  position:fixed;inset:0;background:rgba(20,12,8,0.92);
+  z-index:400;opacity:0;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  transition:opacity 0.3s ease;
+}
+.sku-lightbox.open{opacity:1;pointer-events:auto}
+.sku-lightbox-inner{position:relative;max-width:90vw;max-height:85vh}
+.sku-lightbox-inner img{
+  max-width:100%;max-height:80vh;display:block;
+  border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,0.5);
+}
+.sku-lightbox-label{
+  position:absolute;bottom:-44px;left:50%;transform:translateX(-50%);
+  background:var(--gold);color:#fff;padding:8px 24px;border-radius:20px;
+  font-weight:600;letter-spacing:1px;white-space:nowrap;font-size:14px;
+}
+.sku-lightbox-close{
+  position:absolute;top:-50px;right:0;
+  width:40px;height:40px;border-radius:50%;border:none;
+  background:rgba(255,255,255,0.15);color:#fff;font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.sku-lightbox-close:hover{background:rgba(255,255,255,0.3);transform:rotate(90deg)}
+
 /* === Export All Docs Button === */
 .export-docs-bar{
   background:linear-gradient(135deg,var(--brown) 0%,#2A1E15 100%);
@@ -676,6 +736,15 @@ footer{
   <div class="detail-modal" id="detailModal"></div>
 </div>
 
+<!-- SKU Lightbox -->
+<div class="sku-lightbox" id="skuLightbox" onclick="closeSku()">
+  <div class="sku-lightbox-inner">
+    <img id="skuLightboxImg" src="" alt="">
+    <div class="sku-lightbox-label" id="skuLightboxLabel"></div>
+    <button class="sku-lightbox-close" onclick="closeSku()">×</button>
+  </div>
+</div>
+
 <!-- Why Us -->
 <section class="why-section">
   <div class="why-inner">
@@ -786,7 +855,138 @@ const products = [
       "Travel",
       "Prayer"
     ],
-    "customization": "30+ stock colors · Custom Pantone matching · Private label & woven brand tags available"
+    "customization": "30+ stock colors · Custom Pantone matching · Private label & woven brand tags available",
+    "skuColors": [
+      {
+        "no": 1,
+        "image": "https://sc04.alicdn.com/kf/H6bbd8eb63ce345deafdb1202eb837a16E.jpg"
+      },
+      {
+        "no": 2,
+        "image": "https://sc04.alicdn.com/kf/H7a169a320fe94272aee9d735df11ab64g.jpg"
+      },
+      {
+        "no": 3,
+        "image": "https://sc04.alicdn.com/kf/H4f17849a2a4b4de9a9efe8fad44c826cM.jpg"
+      },
+      {
+        "no": 4,
+        "image": "https://sc04.alicdn.com/kf/H504070f810fc430694ad773a4b4696deZ.jpg"
+      },
+      {
+        "no": 5,
+        "image": "https://sc04.alicdn.com/kf/Hd20989d8d7514c10bdf7439c61f20645S.jpg"
+      },
+      {
+        "no": 6,
+        "image": "https://sc04.alicdn.com/kf/H3cfc629f43504a13a3e55cf182e96f82y.jpg"
+      },
+      {
+        "no": 7,
+        "image": "https://sc04.alicdn.com/kf/H24318d25e58f4613932856d5fe0eb07f3.jpg"
+      },
+      {
+        "no": 8,
+        "image": "https://sc04.alicdn.com/kf/H9d55db7a28e042afa72653fc224629a1d.jpg"
+      },
+      {
+        "no": 9,
+        "image": "https://sc04.alicdn.com/kf/Hd2b5b45b6be443a5aceeeb3e83236cb6E.jpg"
+      },
+      {
+        "no": 10,
+        "image": "https://sc04.alicdn.com/kf/H8264fc2730094731a642a4e517b34e29H.jpg"
+      },
+      {
+        "no": 11,
+        "image": "https://sc04.alicdn.com/kf/H599767e2a170493f86255077537c122eD.jpg"
+      },
+      {
+        "no": 12,
+        "image": "https://sc04.alicdn.com/kf/H24ed3e1d9b804a68b005f922442dcb58c.jpg"
+      },
+      {
+        "no": 13,
+        "image": "https://sc04.alicdn.com/kf/H71ffb5e64e054719ad48b3c3c35165b18.jpg"
+      },
+      {
+        "no": 14,
+        "image": "https://sc04.alicdn.com/kf/H4a729e4c6ee949de9876b70d5cf97f4bn.jpg"
+      },
+      {
+        "no": 15,
+        "image": "https://sc04.alicdn.com/kf/Hc966964267174b05ac2924bf35c7240bG.jpg"
+      },
+      {
+        "no": 16,
+        "image": "https://sc04.alicdn.com/kf/Hb2873fb4b3184a01adb685e18a9cf1ecq.jpg"
+      },
+      {
+        "no": 17,
+        "image": "https://sc04.alicdn.com/kf/H01a794847b1543c286727f11578b50a3m.jpg"
+      },
+      {
+        "no": 18,
+        "image": "https://sc04.alicdn.com/kf/H13942b35be864eb68f3a2d8e1a67f69du.jpg"
+      },
+      {
+        "no": 19,
+        "image": "https://sc04.alicdn.com/kf/Hda9d03cbd02f46cc8f3a829038b35ff4W.jpg"
+      },
+      {
+        "no": 20,
+        "image": "https://sc04.alicdn.com/kf/Hf9db5804b84c436bbe34b6aba58590b12.jpg"
+      },
+      {
+        "no": 21,
+        "image": "https://sc04.alicdn.com/kf/Had84fc97d4584379a79b0d790cde68250.jpg"
+      },
+      {
+        "no": 22,
+        "image": "https://sc04.alicdn.com/kf/Hc5480c8322a74aa0a4f2e756c82346e6n.jpg"
+      },
+      {
+        "no": 23,
+        "image": "https://sc04.alicdn.com/kf/H1fce6b1250cc41409da4ee64284df6333.jpg"
+      },
+      {
+        "no": 24,
+        "image": "https://sc04.alicdn.com/kf/H3f4d4264dace4b3e966aa4606f35f562j.jpg"
+      },
+      {
+        "no": 25,
+        "image": "https://sc04.alicdn.com/kf/H56cd6a1218114c26a83acf08494dc7be5.jpg"
+      },
+      {
+        "no": 26,
+        "image": "https://sc04.alicdn.com/kf/H4ac3853e9aca4aeeaf0024829f99bc6az.jpg"
+      },
+      {
+        "no": 27,
+        "image": "https://sc04.alicdn.com/kf/H24593a8df2204ed6b44f13cb085593d6s.jpg"
+      },
+      {
+        "no": 28,
+        "image": "https://sc04.alicdn.com/kf/H17a9b230f046494ab6c8df9018d437fav.jpg"
+      },
+      {
+        "no": 29,
+        "image": "https://sc04.alicdn.com/kf/H0af6b7b62b084e728927cda079962d89P.jpg"
+      },
+      {
+        "no": 30,
+        "image": "https://sc04.alicdn.com/kf/Hc8bd1288813d4c4cbd277b022ab7c306R.jpg"
+      },
+      {
+        "no": 31,
+        "image": "https://sc04.alicdn.com/kf/H8ac324994f614dcb9266d7e761e9bf0bw.jpg"
+      },
+      {
+        "no": 32,
+        "image": "https://sc04.alicdn.com/kf/H16b282a002a74d43b84d637f2da17528B.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/Popular-in-Australia-Plain-100-Viscose_1601387636894.html"
   },
   {
     "name": "RTS Custom Ethnic Women Solid Color Veils Shawl Rayon Cotton Modal Hijab Modal Voile Scarfs",
@@ -810,7 +1010,138 @@ const products = [
       "Fashion E-commerce",
       "Bridal Companion"
     ],
-    "customization": "MOQ 100 pcs for stock colors · Custom dye lots from 500 pcs · Logo embroidery available"
+    "customization": "MOQ 100 pcs for stock colors · Custom dye lots from 500 pcs · Logo embroidery available",
+    "skuColors": [
+      {
+        "no": 1,
+        "image": "https://sc04.alicdn.com/kf/H6bbd8eb63ce345deafdb1202eb837a16E.jpg"
+      },
+      {
+        "no": 2,
+        "image": "https://sc04.alicdn.com/kf/H7a169a320fe94272aee9d735df11ab64g.jpg"
+      },
+      {
+        "no": 3,
+        "image": "https://sc04.alicdn.com/kf/H4f17849a2a4b4de9a9efe8fad44c826cM.jpg"
+      },
+      {
+        "no": 4,
+        "image": "https://sc04.alicdn.com/kf/H504070f810fc430694ad773a4b4696deZ.jpg"
+      },
+      {
+        "no": 5,
+        "image": "https://sc04.alicdn.com/kf/Hd20989d8d7514c10bdf7439c61f20645S.jpg"
+      },
+      {
+        "no": 6,
+        "image": "https://sc04.alicdn.com/kf/H3cfc629f43504a13a3e55cf182e96f82y.jpg"
+      },
+      {
+        "no": 7,
+        "image": "https://sc04.alicdn.com/kf/H24318d25e58f4613932856d5fe0eb07f3.jpg"
+      },
+      {
+        "no": 8,
+        "image": "https://sc04.alicdn.com/kf/H9d55db7a28e042afa72653fc224629a1d.jpg"
+      },
+      {
+        "no": 9,
+        "image": "https://sc04.alicdn.com/kf/Hd2b5b45b6be443a5aceeeb3e83236cb6E.jpg"
+      },
+      {
+        "no": 10,
+        "image": "https://sc04.alicdn.com/kf/H8264fc2730094731a642a4e517b34e29H.jpg"
+      },
+      {
+        "no": 11,
+        "image": "https://sc04.alicdn.com/kf/H599767e2a170493f86255077537c122eD.jpg"
+      },
+      {
+        "no": 12,
+        "image": "https://sc04.alicdn.com/kf/H24ed3e1d9b804a68b005f922442dcb58c.jpg"
+      },
+      {
+        "no": 13,
+        "image": "https://sc04.alicdn.com/kf/H71ffb5e64e054719ad48b3c3c35165b18.jpg"
+      },
+      {
+        "no": 14,
+        "image": "https://sc04.alicdn.com/kf/H4a729e4c6ee949de9876b70d5cf97f4bn.jpg"
+      },
+      {
+        "no": 15,
+        "image": "https://sc04.alicdn.com/kf/Hc966964267174b05ac2924bf35c7240bG.jpg"
+      },
+      {
+        "no": 16,
+        "image": "https://sc04.alicdn.com/kf/Hb2873fb4b3184a01adb685e18a9cf1ecq.jpg"
+      },
+      {
+        "no": 17,
+        "image": "https://sc04.alicdn.com/kf/H01a794847b1543c286727f11578b50a3m.jpg"
+      },
+      {
+        "no": 18,
+        "image": "https://sc04.alicdn.com/kf/H13942b35be864eb68f3a2d8e1a67f69du.jpg"
+      },
+      {
+        "no": 19,
+        "image": "https://sc04.alicdn.com/kf/Hda9d03cbd02f46cc8f3a829038b35ff4W.jpg"
+      },
+      {
+        "no": 20,
+        "image": "https://sc04.alicdn.com/kf/Hf9db5804b84c436bbe34b6aba58590b12.jpg"
+      },
+      {
+        "no": 21,
+        "image": "https://sc04.alicdn.com/kf/Had84fc97d4584379a79b0d790cde68250.jpg"
+      },
+      {
+        "no": 22,
+        "image": "https://sc04.alicdn.com/kf/Hc5480c8322a74aa0a4f2e756c82346e6n.jpg"
+      },
+      {
+        "no": 23,
+        "image": "https://sc04.alicdn.com/kf/H1fce6b1250cc41409da4ee64284df6333.jpg"
+      },
+      {
+        "no": 24,
+        "image": "https://sc04.alicdn.com/kf/H3f4d4264dace4b3e966aa4606f35f562j.jpg"
+      },
+      {
+        "no": 25,
+        "image": "https://sc04.alicdn.com/kf/H56cd6a1218114c26a83acf08494dc7be5.jpg"
+      },
+      {
+        "no": 26,
+        "image": "https://sc04.alicdn.com/kf/H4ac3853e9aca4aeeaf0024829f99bc6az.jpg"
+      },
+      {
+        "no": 27,
+        "image": "https://sc04.alicdn.com/kf/H24593a8df2204ed6b44f13cb085593d6s.jpg"
+      },
+      {
+        "no": 28,
+        "image": "https://sc04.alicdn.com/kf/H17a9b230f046494ab6c8df9018d437fav.jpg"
+      },
+      {
+        "no": 29,
+        "image": "https://sc04.alicdn.com/kf/H0af6b7b62b084e728927cda079962d89P.jpg"
+      },
+      {
+        "no": 30,
+        "image": "https://sc04.alicdn.com/kf/Hc8bd1288813d4c4cbd277b022ab7c306R.jpg"
+      },
+      {
+        "no": 31,
+        "image": "https://sc04.alicdn.com/kf/H8ac324994f614dcb9266d7e761e9bf0bw.jpg"
+      },
+      {
+        "no": 32,
+        "image": "https://sc04.alicdn.com/kf/H16b282a002a74d43b84d637f2da17528B.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/Popular-in-Australia-Plain-100-Viscose_1601387636894.html"
   },
   {
     "name": "Custom Soft Lightweight Double Stitches Bamboo Rayon Viscose Modal Hijab Scarf Cotton Plain Hijab Muslim Women Shawl",
@@ -834,7 +1165,138 @@ const products = [
       "Sustainable Brands",
       "Gift Sets"
     ],
-    "customization": "Eco-friendly recycled packaging · Hangtags with sustainability story · Carbon-neutral shipping option"
+    "customization": "Eco-friendly recycled packaging · Hangtags with sustainability story · Carbon-neutral shipping option",
+    "skuColors": [
+      {
+        "no": 1,
+        "image": "https://sc04.alicdn.com/kf/H6bbd8eb63ce345deafdb1202eb837a16E.jpg"
+      },
+      {
+        "no": 2,
+        "image": "https://sc04.alicdn.com/kf/H7a169a320fe94272aee9d735df11ab64g.jpg"
+      },
+      {
+        "no": 3,
+        "image": "https://sc04.alicdn.com/kf/H4f17849a2a4b4de9a9efe8fad44c826cM.jpg"
+      },
+      {
+        "no": 4,
+        "image": "https://sc04.alicdn.com/kf/H504070f810fc430694ad773a4b4696deZ.jpg"
+      },
+      {
+        "no": 5,
+        "image": "https://sc04.alicdn.com/kf/Hd20989d8d7514c10bdf7439c61f20645S.jpg"
+      },
+      {
+        "no": 6,
+        "image": "https://sc04.alicdn.com/kf/H3cfc629f43504a13a3e55cf182e96f82y.jpg"
+      },
+      {
+        "no": 7,
+        "image": "https://sc04.alicdn.com/kf/H24318d25e58f4613932856d5fe0eb07f3.jpg"
+      },
+      {
+        "no": 8,
+        "image": "https://sc04.alicdn.com/kf/H9d55db7a28e042afa72653fc224629a1d.jpg"
+      },
+      {
+        "no": 9,
+        "image": "https://sc04.alicdn.com/kf/Hd2b5b45b6be443a5aceeeb3e83236cb6E.jpg"
+      },
+      {
+        "no": 10,
+        "image": "https://sc04.alicdn.com/kf/H8264fc2730094731a642a4e517b34e29H.jpg"
+      },
+      {
+        "no": 11,
+        "image": "https://sc04.alicdn.com/kf/H599767e2a170493f86255077537c122eD.jpg"
+      },
+      {
+        "no": 12,
+        "image": "https://sc04.alicdn.com/kf/H24ed3e1d9b804a68b005f922442dcb58c.jpg"
+      },
+      {
+        "no": 13,
+        "image": "https://sc04.alicdn.com/kf/H71ffb5e64e054719ad48b3c3c35165b18.jpg"
+      },
+      {
+        "no": 14,
+        "image": "https://sc04.alicdn.com/kf/H4a729e4c6ee949de9876b70d5cf97f4bn.jpg"
+      },
+      {
+        "no": 15,
+        "image": "https://sc04.alicdn.com/kf/Hc966964267174b05ac2924bf35c7240bG.jpg"
+      },
+      {
+        "no": 16,
+        "image": "https://sc04.alicdn.com/kf/Hb2873fb4b3184a01adb685e18a9cf1ecq.jpg"
+      },
+      {
+        "no": 17,
+        "image": "https://sc04.alicdn.com/kf/H01a794847b1543c286727f11578b50a3m.jpg"
+      },
+      {
+        "no": 18,
+        "image": "https://sc04.alicdn.com/kf/H13942b35be864eb68f3a2d8e1a67f69du.jpg"
+      },
+      {
+        "no": 19,
+        "image": "https://sc04.alicdn.com/kf/Hda9d03cbd02f46cc8f3a829038b35ff4W.jpg"
+      },
+      {
+        "no": 20,
+        "image": "https://sc04.alicdn.com/kf/Hf9db5804b84c436bbe34b6aba58590b12.jpg"
+      },
+      {
+        "no": 21,
+        "image": "https://sc04.alicdn.com/kf/Had84fc97d4584379a79b0d790cde68250.jpg"
+      },
+      {
+        "no": 22,
+        "image": "https://sc04.alicdn.com/kf/Hc5480c8322a74aa0a4f2e756c82346e6n.jpg"
+      },
+      {
+        "no": 23,
+        "image": "https://sc04.alicdn.com/kf/H1fce6b1250cc41409da4ee64284df6333.jpg"
+      },
+      {
+        "no": 24,
+        "image": "https://sc04.alicdn.com/kf/H3f4d4264dace4b3e966aa4606f35f562j.jpg"
+      },
+      {
+        "no": 25,
+        "image": "https://sc04.alicdn.com/kf/H56cd6a1218114c26a83acf08494dc7be5.jpg"
+      },
+      {
+        "no": 26,
+        "image": "https://sc04.alicdn.com/kf/H4ac3853e9aca4aeeaf0024829f99bc6az.jpg"
+      },
+      {
+        "no": 27,
+        "image": "https://sc04.alicdn.com/kf/H24593a8df2204ed6b44f13cb085593d6s.jpg"
+      },
+      {
+        "no": 28,
+        "image": "https://sc04.alicdn.com/kf/H17a9b230f046494ab6c8df9018d437fav.jpg"
+      },
+      {
+        "no": 29,
+        "image": "https://sc04.alicdn.com/kf/H0af6b7b62b084e728927cda079962d89P.jpg"
+      },
+      {
+        "no": 30,
+        "image": "https://sc04.alicdn.com/kf/Hc8bd1288813d4c4cbd277b022ab7c306R.jpg"
+      },
+      {
+        "no": 31,
+        "image": "https://sc04.alicdn.com/kf/H8ac324994f614dcb9266d7e761e9bf0bw.jpg"
+      },
+      {
+        "no": 32,
+        "image": "https://sc04.alicdn.com/kf/H16b282a002a74d43b84d637f2da17528B.jpg"
+      }
+    ],
+    "skuSourceUrl": "https://www.alibaba.com/product-detail/Popular-in-Australia-Plain-100-Viscose_1601387636894.html"
   },
   {
     "name": "Premium Modal Hijab Scarf with Sophisticated Animal Print — Leopard & Snake Skin Design 180×90cm",
@@ -1494,6 +1956,24 @@ function openDetails(id){
         <p style="font-size:14px;line-height:1.7;color:var(--brown);">${p.customization}</p>
       </div>
 
+      ${p.skuColors ? `
+      <div class="detail-section">
+        <h4>🎨 Available in ${p.skuColors.length} Colors — Live Color Chart</h4>
+        <p style="font-size:13px;color:var(--brown-light);margin-bottom:14px;">
+          Click any swatch to enlarge · All colors in stock · MOQ 100 pcs per color
+          ${p.skuSourceUrl ? `· <a href="${p.skuSourceUrl}" target="_blank" style="color:var(--gold-dark);font-weight:600;">View on Alibaba ↗</a>` : ''}
+        </p>
+        <div class="sku-grid">
+          ${p.skuColors.map(s => `
+            <div class="sku-swatch" onclick="openSku('${s.image}','#${s.no}')" title="Color #${s.no}">
+              <img src="${s.image}" alt="Color ${s.no}" loading="lazy">
+              <span class="sku-num">#${s.no}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
       <div class="detail-actions">
         <button class="btn-copy-usp" onclick="copyUSP(${id})">📋 Copy Full USP</button>
         <button class="btn-add-modal" onclick="toggleBasket(${id});closeDetails();">${inBasket?'✓ In Basket':'+ Add to Quote'}</button>
@@ -1576,9 +2056,20 @@ li{margin:6px 0}
   showToast('✓ USP Document downloaded!');
 }
 
+// ===== SKU Lightbox =====
+function openSku(imgUrl, label){
+  document.getElementById('skuLightboxImg').src = imgUrl;
+  document.getElementById('skuLightboxLabel').textContent = 'Color ' + label;
+  document.getElementById('skuLightbox').classList.add('open');
+}
+function closeSku(){
+  document.getElementById('skuLightbox').classList.remove('open');
+}
+
 // ESC closes modal
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
+    closeSku();
     closeDetails();
     closeDrawer();
   }
