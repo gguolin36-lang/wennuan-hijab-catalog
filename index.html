@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <style>
 :root{
   --gold:#C9A84C;
@@ -942,7 +943,7 @@ footer{
   <div class="drawer-footer">
     <button class="btn-submit" onclick="submitQuoteWhatsApp()" style="background:linear-gradient(135deg,#25D366,#128C7E);">💬 Send via WhatsApp</button>
     <button class="btn-submit" onclick="submitQuote()">📨 Send via Email</button>
-    <button class="btn-secondary" onclick="exportCSV()">📥 Export as CSV</button>
+    <button class="btn-secondary" onclick="exportExcel()">📥 Download Excel (with Images)</button>
   </div>
 </div>
 
@@ -7828,22 +7829,174 @@ function submitQuote(){
   window.location.href = `mailto:wennuan@wennuanfactory.com?subject=Quote Request - Wennuan Hijab Catalog&body=${body}`;
 }
 
-function exportCSV(){
+// ===== Helper: fetch image URL → base64 (with size constraints) =====
+async function fetchImageAsBase64(url, maxSize){
+  maxSize = maxSize || 200;
+  try{
+    const res = await fetch(url, {mode:'cors'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const blob = await res.blob();
+    // Resize via canvas to keep xlsx small + uniform rows
+    return await new Promise((resolve, reject)=>{
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = ()=>{
+        const ratio = Math.min(maxSize/img.width, maxSize/img.height, 1);
+        const w = Math.round(img.width*ratio), h = Math.round(img.height*ratio);
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        // PNG keeps transparency; jpeg smaller. Use jpeg q0.85
+        cv.toBlob(b=>{
+          const fr = new FileReader();
+          fr.onload = ()=> resolve({data: fr.result.split(',')[1], ext:'jpeg', w, h});
+          fr.onerror = reject;
+          fr.readAsDataURL(b);
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = ()=> reject(new Error('img load'));
+      img.src = URL.createObjectURL(blob);
+    });
+  }catch(e){
+    console.warn('img fail', url, e.message);
+    return null;
+  }
+}
+
+async function exportExcel(){
   const keys = Object.keys(quoteBasket);
   if(keys.length === 0){ showToast('Basket is empty'); return; }
-  let csv = 'Product Name,Category,Material,Color SKU,MOQ,Price,Quantity,URL\n';
-  keys.forEach(key => {
+  if(typeof ExcelJS === 'undefined'){ showToast('Excel library loading… try again'); return; }
+  showToast('⏳ Generating Excel (loading images)...');
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'Wennuan Hijab Catalog';
+  wb.created = new Date();
+  const ws = wb.addWorksheet('Quote Request', {
+    views:[{state:'frozen', ySplit:1}],
+    properties:{defaultRowHeight: 110}
+  });
+
+  // Columns
+  ws.columns = [
+    { header:'#',            key:'no',       width: 5 },
+    { header:'Product Image',key:'pimg',     width: 18 },
+    { header:'Product Name', key:'name',     width: 38 },
+    { header:'Category',     key:'cat',      width: 18 },
+    { header:'SKU Color',    key:'skuimg',   width: 14 },
+    { header:'SKU No.',      key:'skuno',    width: 12 },
+    { header:'Quantity',     key:'qty',      width: 12 },
+    { header:'MOQ',          key:'moq',      width: 12 }
+  ];
+
+  // Header style
+  const headerRow = ws.getRow(1);
+  headerRow.height = 28;
+  headerRow.eachCell(c=>{
+    c.font = { bold:true, color:{argb:'FFFFFFFF'}, size:12, name:'Calibri' };
+    c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF3D2B1F'} };
+    c.alignment = { vertical:'middle', horizontal:'center' };
+    c.border = { bottom:{style:'medium', color:{argb:'FFC9A84C'}} };
+  });
+
+  // Rows
+  for(let i=0;i<keys.length;i++){
+    const item = quoteBasket[keys[i]];
+    const p = products[item.productId];
+    const rowIdx = i + 2;
+    const row = ws.addRow({
+      no: i+1,
+      pimg: '',
+      name: p.name,
+      cat: p.category,
+      skuimg: '',
+      skuno: item.sku ? ('#'+item.sku) : '—',
+      qty: item.qty + ' pcs',
+      moq: p.moq || '—'
+    });
+    row.height = 110;
+    row.eachCell(c=>{
+      c.alignment = { vertical:'middle', horizontal:'center', wrapText:true };
+      c.font = { size:11, name:'Calibri' };
+      c.border = { bottom:{style:'thin', color:{argb:'FFEDE4CE'}} };
+    });
+    // Left-align product name
+    row.getCell('name').alignment = { vertical:'middle', horizontal:'left', wrapText:true };
+    row.getCell('name').font = { size:11, bold:true, name:'Calibri', color:{argb:'FF3D2B1F'} };
+    // Quantity highlight
+    row.getCell('qty').font = { size:12, bold:true, color:{argb:'FFA8862E'} };
+    row.getCell('skuno').font = { size:11, bold:true, name:'Consolas' };
+  }
+
+  // Embed images (parallel)
+  const imgTasks = keys.map(async (key,i)=>{
     const item = quoteBasket[key];
     const p = products[item.productId];
-    const sku = item.sku ? (item.skuName ? `${item.skuName} (#${item.sku})` : `#${item.sku}`) : '-';
-    csv += `"${p.name}","${p.category}","${p.material}","${sku}","${p.moq}","${p.price}","${item.qty}","${p.url}"\n`;
+    const rowIdx = i + 2;
+
+    // Product image (column B = index 1, 0-based)
+    if(p.image){
+      const pimg = await fetchImageAsBase64(p.image, 280);
+      if(pimg){
+        const id = wb.addImage({ base64: pimg.data, extension: pimg.ext });
+        ws.addImage(id, {
+          tl:{ col:1.1, row:rowIdx-1+0.1 },
+          ext:{ width: 120, height: 120 }
+        });
+      }
+    }
+
+    // SKU swatch (column E = index 4)
+    if(item.sku){
+      // Find matching swatch
+      let swatch = null;
+      if(p.skuColors){
+        const found = p.skuColors.find(s=> String(s.no)===String(item.sku) || s.name===item.skuName);
+        if(found) swatch = found.image;
+      }
+      if(swatch){
+        const simg = await fetchImageAsBase64(swatch, 180);
+        if(simg){
+          const id = wb.addImage({ base64: simg.data, extension: simg.ext });
+          ws.addImage(id, {
+            tl:{ col:4.15, row:rowIdx-1+0.15 },
+            ext:{ width: 88, height: 88 }
+          });
+        }
+      }
+    }
   });
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+
+  await Promise.all(imgTasks);
+
+  // Total row
+  const totalQty = keys.reduce((s,k)=> s + (parseInt(quoteBasket[k].qty)||0), 0);
+  const totalRow = ws.addRow({ name:'TOTAL', qty: totalQty + ' pcs' });
+  totalRow.height = 32;
+  totalRow.eachCell(c=>{
+    c.font = { bold:true, size:12, color:{argb:'FFFFFFFF'} };
+    c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFC9A84C'} };
+    c.alignment = { vertical:'middle', horizontal:'center' };
+  });
+
+  // Footer info row
+  ws.addRow([]);
+  const infoRow = ws.addRow(['Yiwu Wennuan Clothing  ·  wennuan@wennuanfactory.com  ·  WhatsApp +86 150 2459 7561']);
+  ws.mergeCells(`A${infoRow.number}:H${infoRow.number}`);
+  infoRow.getCell(1).font = { italic:true, size:10, color:{argb:'FF6B4F3F'} };
+  infoRow.getCell(1).alignment = { horizontal:'center' };
+
+  // Save
+  const buf = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `wennuan-quote-${Date.now()}.csv`;
+  link.download = `Wennuan-Quote-${new Date().toISOString().slice(0,10)}.xlsx`;
   link.click();
-  showToast('CSV downloaded');
+  showToast('✓ Excel downloaded with images!');
 }
 
 function showToast(msg){
