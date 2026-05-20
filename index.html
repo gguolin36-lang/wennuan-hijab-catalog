@@ -12180,18 +12180,11 @@ async function exportExcel(){
   infoRow.getCell(1).font = { italic:true, size:10, color:{argb:'FF6B4F3F'} };
   infoRow.getCell(1).alignment = { horizontal:'center' };
 
-  // ========== SHEET 2..N: ONE DEDICATED SHEET PER PRODUCT (full SKU chart) ==========
-  const COLS_PER_ROW = 8;          // 8 swatches per row
-  const SWATCH_W = 72;             // px
-  const SWATCH_H = 72;
-  const ROW_H_SWATCH = 72;
-  const ROW_H_LABEL  = 20;
-
-  // Queues
+  // Single-sheet image queue (Order Summary only, like the Solid Modal experience)
   const sheet1ImgQueue = [];
-  const skuImgQueue = [];
+  const skuImgQueue = []; // kept empty; preserved so downstream code stays compatible
 
-  // Build sheet 1 image queue (Order Summary)
+  // Build sheet 1 image queue: product hero + selected SKU swatch per row
   for(let i=0;i<keys.length;i++){
     const item = quoteBasket[keys[i]];
     const p = products[item.productId];
@@ -12214,8 +12207,8 @@ async function exportExcel(){
     }
   }
 
-  // ONE worksheet per product
-  for(let i=0;i<keys.length;i++){
+  // (per-product secondary worksheets removed — keeping a single clean Order Summary)
+  if(false) for(let i=0;i<keys.length;i++){
     const item = quoteBasket[keys[i]];
     const p = products[item.productId];
     const skus = p.skuColors || [];
