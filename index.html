@@ -7870,52 +7870,39 @@ async function exportExcel(){
   const keys = Object.keys(quoteBasket);
   if(keys.length === 0){ showToast('Basket is empty'); return; }
   if(typeof ExcelJS === 'undefined'){ showToast('Excel library loading… try again'); return; }
-  showToast('⏳ Generating Excel (loading images)...');
+
+  // Pre-compute total SKU images for progress feedback
+  let totalSkuImgs = 0;
+  keys.forEach(k=>{ const p = products[quoteBasket[k].productId]; totalSkuImgs += (p.skuColors||[]).length; });
+  showToast('⏳ Generating Excel ('+ (keys.length + totalSkuImgs) +' images)...');
 
   const wb = new ExcelJS.Workbook();
   wb.creator = 'Wennuan Hijab Catalog';
   wb.created = new Date();
-  const ws = wb.addWorksheet('Quote Request', {
-    views:[{state:'frozen', ySplit:1}],
-    properties:{defaultRowHeight: 110}
-  });
 
-  // Columns
+  // ========== SHEET 1: Order Summary ==========
+  const ws = wb.addWorksheet('Order Summary', {
+    views:[{state:'frozen', ySplit:1}]
+  });
   ws.columns = [
-    { header:'#',            key:'no',       width: 5 },
-    { header:'Product Image',key:'pimg',     width: 18 },
-    { header:'Product Name', key:'name',     width: 38 },
-    { header:'Category',     key:'cat',      width: 18 },
-    { header:'SKU Color',    key:'skuimg',   width: 14 },
-    { header:'SKU No.',      key:'skuno',    width: 12 },
-    { header:'Quantity',     key:'qty',      width: 12 },
-    { header:'MOQ',          key:'moq',      width: 12 }
+    { header:'#',             key:'no',     width: 5  },
+    { header:'Product Image', key:'pimg',   width: 18 },
+    { header:'Product Name',  key:'name',   width: 38 },
+    { header:'Category',      key:'cat',    width: 18 },
+    { header:'Selected SKU',  key:'skuimg', width: 14 },
+    { header:'SKU No.',       key:'skuno',  width: 12 },
+    { header:'Quantity',      key:'qty',    width: 12 },
+    { header:'MOQ',           key:'moq',    width: 12 }
   ];
+  styleHeader(ws.getRow(1));
 
-  // Header style
-  const headerRow = ws.getRow(1);
-  headerRow.height = 28;
-  headerRow.eachCell(c=>{
-    c.font = { bold:true, color:{argb:'FFFFFFFF'}, size:12, name:'Calibri' };
-    c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF3D2B1F'} };
-    c.alignment = { vertical:'middle', horizontal:'center' };
-    c.border = { bottom:{style:'medium', color:{argb:'FFC9A84C'}} };
-  });
-
-  // Rows
   for(let i=0;i<keys.length;i++){
     const item = quoteBasket[keys[i]];
     const p = products[item.productId];
-    const rowIdx = i + 2;
     const row = ws.addRow({
-      no: i+1,
-      pimg: '',
-      name: p.name,
-      cat: p.category,
-      skuimg: '',
-      skuno: item.sku ? ('#'+item.sku) : '—',
-      qty: item.qty + ' pcs',
-      moq: p.moq || '—'
+      no: i+1, pimg:'', name:p.name, cat:p.category,
+      skuimg:'', skuno: item.sku ? ('#'+item.sku) : '—',
+      qty: item.qty+' pcs', moq: p.moq||'—'
     });
     row.height = 110;
     row.eachCell(c=>{
@@ -7923,71 +7910,136 @@ async function exportExcel(){
       c.font = { size:11, name:'Calibri' };
       c.border = { bottom:{style:'thin', color:{argb:'FFEDE4CE'}} };
     });
-    // Left-align product name
     row.getCell('name').alignment = { vertical:'middle', horizontal:'left', wrapText:true };
     row.getCell('name').font = { size:11, bold:true, name:'Calibri', color:{argb:'FF3D2B1F'} };
-    // Quantity highlight
     row.getCell('qty').font = { size:12, bold:true, color:{argb:'FFA8862E'} };
     row.getCell('skuno').font = { size:11, bold:true, name:'Consolas' };
   }
 
-  // Embed images (parallel)
-  const imgTasks = keys.map(async (key,i)=>{
-    const item = quoteBasket[key];
-    const p = products[item.productId];
-    const rowIdx = i + 2;
-
-    // Product image (column B = index 1, 0-based)
-    if(p.image){
-      const pimg = await fetchImageAsBase64(p.image, 280);
-      if(pimg){
-        const id = wb.addImage({ base64: pimg.data, extension: pimg.ext });
-        ws.addImage(id, {
-          tl:{ col:1.1, row:rowIdx-1+0.1 },
-          ext:{ width: 120, height: 120 }
-        });
-      }
-    }
-
-    // SKU swatch (column E = index 4)
-    if(item.sku){
-      // Find matching swatch
-      let swatch = null;
-      if(p.skuColors){
-        const found = p.skuColors.find(s=> String(s.no)===String(item.sku) || s.name===item.skuName);
-        if(found) swatch = found.image;
-      }
-      if(swatch){
-        const simg = await fetchImageAsBase64(swatch, 180);
-        if(simg){
-          const id = wb.addImage({ base64: simg.data, extension: simg.ext });
-          ws.addImage(id, {
-            tl:{ col:4.15, row:rowIdx-1+0.15 },
-            ext:{ width: 88, height: 88 }
-          });
-        }
-      }
-    }
-  });
-
-  await Promise.all(imgTasks);
-
-  // Total row
+  // Total + footer
   const totalQty = keys.reduce((s,k)=> s + (parseInt(quoteBasket[k].qty)||0), 0);
-  const totalRow = ws.addRow({ name:'TOTAL', qty: totalQty + ' pcs' });
+  const totalRow = ws.addRow({ name:'TOTAL', qty: totalQty+' pcs' });
   totalRow.height = 32;
   totalRow.eachCell(c=>{
     c.font = { bold:true, size:12, color:{argb:'FFFFFFFF'} };
     c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFC9A84C'} };
     c.alignment = { vertical:'middle', horizontal:'center' };
   });
-
-  // Footer info row
   ws.addRow([]);
   const infoRow = ws.addRow(['Yiwu Wennuan Clothing  ·  wennuan@wennuanfactory.com  ·  WhatsApp +86 150 2459 7561']);
   ws.mergeCells(`A${infoRow.number}:H${infoRow.number}`);
   infoRow.getCell(1).font = { italic:true, size:10, color:{argb:'FF6B4F3F'} };
   infoRow.getCell(1).alignment = { horizontal:'center' };
+
+  // ========== SHEET 2: SKU Color Charts (FULL palette per product) ==========
+  const ws2 = wb.addWorksheet('SKU Color Charts');
+  const COLS_PER_ROW = 8;          // 8 swatches per row
+  const SWATCH_W = 70;             // px
+  const SWATCH_H = 70;
+  const ROW_H_SWATCH = 70;         // row height for swatch row
+  const ROW_H_LABEL  = 18;         // row height for label row
+
+  // Set 8 swatch columns of uniform width + 1 leading column for product label
+  ws2.getColumn(1).width = 4;
+  for(let c=2;c<=1+COLS_PER_ROW;c++) ws2.getColumn(c).width = 11;
+
+  // We'll track image loading tasks per-sheet, then run all in parallel at the end.
+  const sheet2ImgQueue = [];   // {sheet, base64Promise, anchor:{col,row,w,h}}
+  const sheet1ImgQueue = [];
+
+  for(let i=0;i<keys.length;i++){
+    const item = quoteBasket[keys[i]];
+    const p = products[item.productId];
+    const skus = p.skuColors || [];
+
+    // Section header row for the product
+    const hdr = ws2.addRow([`${i+1}. ${p.name}  —  ${skus.length} colors  ·  Selected: ${item.sku ? '#'+item.sku : '—'}  ·  Qty: ${item.qty} pcs`]);
+    ws2.mergeCells(`A${hdr.number}:${colLetter(1+COLS_PER_ROW)}${hdr.number}`);
+    hdr.height = 26;
+    hdr.getCell(1).font = { bold:true, size:12, color:{argb:'FFFFFFFF'}, name:'Calibri' };
+    hdr.getCell(1).fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF3D2B1F'} };
+    hdr.getCell(1).alignment = { vertical:'middle', horizontal:'left', indent:1 };
+
+    // Layout: each chunk of 8 skus = 1 swatch row + 1 label row
+    for(let s=0;s<skus.length;s+=COLS_PER_ROW){
+      const chunk = skus.slice(s, s+COLS_PER_ROW);
+      // Swatch row (empty cells, images anchored later)
+      const swatchRow = ws2.addRow([]);
+      swatchRow.height = ROW_H_SWATCH;
+      // Label row (SKU numbers)
+      const labelRow = ws2.addRow(['']);
+      labelRow.height = ROW_H_LABEL;
+      chunk.forEach((sku,idx)=>{
+        const col = 1 + idx + 1;  // skip leading col A
+        const cell = labelRow.getCell(col);
+        // Highlight the selected SKU
+        const isSel = item.sku && (String(sku.no)===String(item.sku) || sku.name===item.skuName);
+        cell.value = '#'+sku.no + (sku.name ? '  '+sku.name : '');
+        cell.alignment = { vertical:'middle', horizontal:'center' };
+        cell.font = { size:9, bold:isSel, name:'Consolas', color:{argb: isSel?'FFA8862E':'FF3D2B1F'} };
+        if(isSel){
+          cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFFFF6D9'} };
+          cell.border = { top:{style:'medium', color:{argb:'FFC9A84C'}} };
+        }
+        // Queue swatch image
+        if(sku.image){
+          sheet2ImgQueue.push({
+            url: sku.image, maxSize: 140,
+            anchor: {
+              col: col - 1 + 0.1,    // 0-based col with small inset
+              row: swatchRow.number - 1 + 0.1,
+              w: SWATCH_W, h: SWATCH_H
+            },
+            sheet: ws2
+          });
+        }
+      });
+    }
+
+    // Spacer row
+    ws2.addRow([]).height = 10;
+
+    // ALSO queue product image + selected SKU swatch for sheet 1
+    if(p.image){
+      sheet1ImgQueue.push({
+        url: p.image, maxSize: 280,
+        anchor:{ col:1.1, row: i+1+0.1, w:120, h:120 },
+        sheet: ws
+      });
+    }
+    if(item.sku){
+      const sel = (p.skuColors||[]).find(s=> String(s.no)===String(item.sku) || s.name===item.skuName);
+      if(sel && sel.image){
+        sheet1ImgQueue.push({
+          url: sel.image, maxSize: 180,
+          anchor:{ col:4.15, row: i+1+0.15, w:88, h:88 },
+          sheet: ws
+        });
+      }
+    }
+  }
+
+  // Load + embed all images in parallel (capped concurrency to avoid mass-fetch stalls)
+  const allTasks = [...sheet1ImgQueue, ...sheet2ImgQueue];
+  let done = 0;
+  async function runOne(t){
+    const data = await fetchImageAsBase64(t.url, t.maxSize);
+    if(data){
+      const id = wb.addImage({ base64: data.data, extension: data.ext });
+      t.sheet.addImage(id, {
+        tl:{ col: t.anchor.col, row: t.anchor.row },
+        ext:{ width: t.anchor.w, height: t.anchor.h }
+      });
+    }
+    done++;
+    if(done % 20 === 0) showToast(`⏳ Embedded ${done}/${allTasks.length} images...`);
+  }
+  // Concurrency 6
+  const POOL = 6;
+  const queue = allTasks.slice();
+  await Promise.all(Array(POOL).fill(0).map(async ()=>{
+    while(queue.length){ await runOne(queue.shift()); }
+  }));
 
   // Save
   const buf = await wb.xlsx.writeBuffer();
@@ -7996,7 +8048,23 @@ async function exportExcel(){
   link.href = URL.createObjectURL(blob);
   link.download = `Wennuan-Quote-${new Date().toISOString().slice(0,10)}.xlsx`;
   link.click();
-  showToast('✓ Excel downloaded with images!');
+  showToast('✓ Excel ready — '+allTasks.length+' images embedded!');
+}
+
+// Helpers
+function styleHeader(row){
+  row.height = 28;
+  row.eachCell(c=>{
+    c.font = { bold:true, color:{argb:'FFFFFFFF'}, size:12, name:'Calibri' };
+    c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF3D2B1F'} };
+    c.alignment = { vertical:'middle', horizontal:'center' };
+    c.border = { bottom:{style:'medium', color:{argb:'FFC9A84C'}} };
+  });
+}
+function colLetter(n){
+  let s = '';
+  while(n > 0){ const m = (n-1)%26; s = String.fromCharCode(65+m) + s; n = Math.floor((n-1)/26); }
+  return s;
 }
 
 function showToast(msg){
