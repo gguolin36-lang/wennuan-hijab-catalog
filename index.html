@@ -12309,12 +12309,36 @@ async function exportExcel(){
     footRow.getCell(1).alignment = { horizontal:'center' };
   }
 
-  // Load + embed all images in parallel
+  // Load + embed all images.
+  // FIX: ExcelJS 4.4.0 has a bug where addImage relationship IDs get scrambled
+  // if wb.addImage() and ws.addImage() are interleaved with parallel async tasks.
+  // Solution: download all bytes IN PARALLEL (fast), then register & place images
+  // STRICTLY SERIALLY in a single tight synchronous loop.
   const allTasks = [...sheet1ImgQueue, ...skuImgQueue];
-  let done = 0, failed = 0;
+  let failed = 0;
   const failedUrls = [];
-  async function runOne(t){
+
+  // Phase 1: parallel download (concurrency 3)
+  const POOL = 3;
+  const dlQueue = allTasks.map((t,idx)=>({...t, _idx: idx}));
+  const results = new Array(allTasks.length);
+  let dlDone = 0;
+  async function dlOne(t){
     const data = await fetchImageAsBase64(t.url, t.maxSize);
+    results[t._idx] = data;
+    dlDone++;
+    if(dlDone % 25 === 0) showToast(`⏳ Downloading ${dlDone}/${allTasks.length}...`);
+  }
+  const queue = dlQueue.slice();
+  await Promise.all(Array(POOL).fill(0).map(async ()=>{
+    while(queue.length){ await dlOne(queue.shift()); }
+  }));
+
+  // Phase 2: SERIAL embed (preserves rId mapping inside ExcelJS)
+  showToast(`⏳ Embedding ${allTasks.length} images into Excel...`);
+  for(let i=0;i<allTasks.length;i++){
+    const t = allTasks[i];
+    const data = results[i];
     if(data){
       const id = wb.addImage({ base64: data.data, extension: data.ext });
       t.sheet.addImage(id, {
@@ -12325,15 +12349,7 @@ async function exportExcel(){
       failed++;
       failedUrls.push(t.url);
     }
-    done++;
-    if(done % 25 === 0) showToast(`⏳ Embedded ${done}/${allTasks.length} images...`);
   }
-  // Concurrency 3 — safer against GitHub Pages rate limits when many SKUs
-  const POOL = 3;
-  const queue = allTasks.slice();
-  await Promise.all(Array(POOL).fill(0).map(async ()=>{
-    while(queue.length){ await runOne(queue.shift()); }
-  }));
   if(failed > 0){
     console.warn('[Export] '+failed+'/'+allTasks.length+' images failed to embed. Examples:', failedUrls.slice(0,5));
   }
