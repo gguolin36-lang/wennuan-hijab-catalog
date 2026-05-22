@@ -12196,7 +12196,14 @@ async function exportExcel(){
       });
     }
     if(item.sku){
-      const sel = (p.skuColors||[]).find(s=> String(s.no)===String(item.sku) || s.name===item.skuName);
+      // Match by SKU number ONLY. NEVER fall back to name match — many catalogs
+      // (e.g. Printed Modal) share the same SKU name "Custom Design" across all
+      // 136 SKUs, which would always return SKU #001 and break per-row images.
+      let sel = (p.skuColors||[]).find(s=> String(s.no)===String(item.sku));
+      if(!sel && item.skuName){
+        // Fallback by name ONLY when sku number lookup truly fails
+        sel = (p.skuColors||[]).find(s=> s.name===item.skuName);
+      }
       if(sel && sel.image){
         sheet1ImgQueue.push({
           url: sel.image, maxSize: 180,
