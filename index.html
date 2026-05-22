@@ -11762,6 +11762,14 @@ const products = [
 
 const categories = ['All','Solid Modal','Printed Modal','Bamboo Jersey','Premium Jersey','Cotton Jersey','Liquid Jersey','Instant Cap'];
 let currentFilter = 'All';
+// Fresh session: always start with an empty cart so each page load is pristine.
+// Use sessionStorage flag so cart still persists during the same browsing session
+// (refresh / navigate within tab keeps items), but a NEW tab or reopened browser
+// gives a clean slate.
+if(!sessionStorage.getItem('cartSessionActive')){
+  localStorage.removeItem('quoteBasket');
+  sessionStorage.setItem('cartSessionActive', '1');
+}
 let quoteBasket = JSON.parse(localStorage.getItem('quoteBasket') || '{}');
 // Migrate legacy entries: old format {id: {qty}} -> new format {key: {productId, qty, sku?, skuImage?}}
 Object.keys(quoteBasket).forEach(k => {
