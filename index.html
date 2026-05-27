@@ -12853,7 +12853,6 @@ function openDetails(id){
       ` : ''}
 
       <div class="detail-actions">
-        <button class="btn-copy-usp" onclick="copyUSP(${id})">📋 Copy Full USP</button>
         ${p.skuColors ? `
           <button class="btn-add-modal" onclick="closeDetails();setTimeout(()=>openColorPicker(${id}),250);">
             🎨 ${basketHasProduct(id)?'Manage Colors':'Choose Color →'}
