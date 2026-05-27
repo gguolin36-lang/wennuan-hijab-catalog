@@ -995,13 +995,17 @@ header{
 .sku-swatch:hover .sku-num{opacity:1}
 .sku-add-btn{
   position:absolute;top:4px;right:4px;
-  width:22px;height:22px;border-radius:50%;border:none;
+  width:22px;height:22px;min-width:22px;min-height:22px;max-width:22px;max-height:22px;
+  aspect-ratio:1/1;
+  border-radius:50%;border:none;
   background:var(--gold);color:#fff;font-size:14px;font-weight:700;
   cursor:pointer;line-height:1;padding:0;
   display:flex;align-items:center;justify-content:center;
+  box-sizing:border-box;flex:0 0 auto;
   box-shadow:0 2px 6px rgba(0,0,0,0.25);
   opacity:0;transform:scale(0.5);
   transition:all 0.2s ease;
+  overflow:hidden;
 }
 .sku-swatch:hover .sku-add-btn{opacity:1;transform:scale(1)}
 .sku-swatch.in-basket .sku-add-btn{
@@ -1019,7 +1023,20 @@ header{
 @media (max-width:600px){
   .sku-grid{grid-template-columns:repeat(5,1fr);gap:6px}
   .sku-num{font-size:9px;opacity:1}
-  .sku-add-btn{opacity:1;transform:scale(1);width:20px;height:20px;font-size:13px}
+  .sku-add-btn{
+    opacity:1;transform:scale(1);
+    width:22px;height:22px;
+    min-width:22px;min-height:22px;
+    max-width:22px;max-height:22px;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    font-size:13px;
+    padding:0;line-height:1;
+    flex:0 0 auto;
+    box-sizing:border-box;
+  }
+  /* Override the in-basket scale to keep perfect circle */
+  .sku-swatch.in-basket .sku-add-btn{transform:scale(1)}
 }
 
 /* === SKU Lightbox === */
