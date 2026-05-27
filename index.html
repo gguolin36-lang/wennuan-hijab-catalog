@@ -278,10 +278,10 @@ header{
 /* === Trust Strip (under hero — dark band for contrast) === */
 .trust-strip{
   position:relative;z-index:2;
-  background:linear-gradient(180deg,#2A1E15 0%,#1A1209 100%);
-  border-top:1px solid rgba(201,168,76,0.18);
-  border-bottom:1px solid rgba(201,168,76,0.18);
-  padding:30px 24px;
+  background:linear-gradient(180deg,#FBF7EE 0%,#F5EFE0 100%);
+  border-top:1px solid rgba(168,134,46,0.28);
+  border-bottom:1px solid rgba(168,134,46,0.28);
+  padding:42px 24px;
 }
 .trust-grid{
   max-width:1280px;margin:0 auto;
@@ -289,26 +289,28 @@ header{
 }
 .trust-item{
   text-align:center;padding:6px 22px;
-  border-right:1px solid rgba(201,168,76,0.18);
+  border-right:1px solid rgba(168,134,46,0.22);
 }
 .trust-item:last-child{border-right:none}
 .trust-icon{
-  font-size:22px;color:var(--gold);
-  margin-bottom:10px;
+  font-size:18px;color:var(--gold-dark);
+  margin-bottom:12px;
+  letter-spacing:2px;
 }
 .trust-title{
-  font-family:'Playfair Display',serif;font-size:16px;
-  color:#F4E0A1;font-weight:600;margin-bottom:4px;
+  font-family:'Playfair Display',serif;font-size:17px;
+  color:var(--brown);font-weight:600;margin-bottom:6px;
   letter-spacing:0.2px;
 }
 .trust-sub{
-  font-size:11px;color:rgba(248,243,232,0.65);
-  letter-spacing:1.2px;text-transform:uppercase;font-weight:500;
+  font-size:10.5px;color:var(--brown-light);
+  letter-spacing:1.8px;text-transform:uppercase;font-weight:600;
+  opacity:0.85;
 }
 @media(max-width:900px){
   .trust-grid{grid-template-columns:repeat(2,1fr);gap:6px 0}
-  .trust-item{border-right:none;border-bottom:1px solid var(--cream-dark);padding:18px}
-  .trust-item:nth-child(odd){border-right:1px solid var(--cream-dark)}
+  .trust-item{border-right:none;border-bottom:1px solid rgba(168,134,46,0.18);padding:18px}
+  .trust-item:nth-child(odd){border-right:1px solid rgba(168,134,46,0.18)}
   .trust-item:nth-last-child(-n+2){border-bottom:none}
   .stat{padding:0 22px;min-width:120px}
   .stat-num{font-size:34px}
@@ -961,28 +963,78 @@ header{
 
 /* === Footer === */
 footer{
-  background:#1F1610;color:var(--cream);
-  padding:48px 24px 24px;
+  background:linear-gradient(180deg,#FBF7EE 0%,#F5EFE0 100%);
+  color:var(--brown);
+  padding:72px 24px 28px;
+  border-top:1px solid rgba(168,134,46,0.28);
+  position:relative;
+}
+footer::before{
+  content:"";position:absolute;left:50%;top:-1px;
+  width:120px;height:3px;background:var(--gold-dark);
+  transform:translateX(-50%);
+  opacity:0.7;
+}
+.footer-brand{
+  max-width:1400px;margin:0 auto 48px;
+  text-align:center;
+  padding-bottom:40px;
+  border-bottom:1px solid rgba(168,134,46,0.22);
+}
+.footer-brand .fb-mark{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold-dark);font-weight:600;
+  margin-bottom:14px;
+}
+.footer-brand .fb-mark .line{width:32px;height:1px;background:var(--gold-dark);opacity:0.65}
+.footer-brand h4{
+  font-family:'Playfair Display',serif;
+  font-size:32px;font-weight:600;color:var(--brown);
+  letter-spacing:-0.3px;
+  margin:0 0 10px;
+}
+.footer-brand h4 .it{font-style:italic;color:var(--gold-dark);font-weight:500}
+.footer-brand .fb-arabic{
+  font-family:'Amiri','Noto Naskh Arabic',serif;
+  font-size:22px;color:var(--gold-dark);
+  margin-bottom:8px;direction:rtl;
 }
 .footer-inner{
   max-width:1400px;margin:0 auto;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:32px;margin-bottom:32px;
+  gap:40px;margin-bottom:40px;
 }
 .footer-col h5{
-  font-family:'Playfair Display',serif;color:var(--gold);
-  font-size:16px;margin-bottom:14px;
+  font-family:'Playfair Display',serif;color:var(--brown);
+  font-size:14px;font-weight:700;
+  margin-bottom:18px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding-bottom:10px;
+  position:relative;
+}
+.footer-col h5::after{
+  content:"";position:absolute;left:0;bottom:0;
+  width:28px;height:1px;background:var(--gold-dark);
 }
 .footer-col p,.footer-col a{
-  font-size:13px;color:rgba(248,243,232,0.7);
-  text-decoration:none;display:block;margin-bottom:8px;line-height:1.6;
+  font-size:13px;color:var(--brown-light);
+  text-decoration:none;display:block;margin-bottom:10px;line-height:1.7;
+  transition:color 0.25s ease, padding-left 0.25s ease;
 }
-.footer-col a:hover{color:var(--gold)}
+.footer-col a:hover{
+  color:var(--gold-dark);
+  padding-left:6px;
+}
 .footer-bottom{
-  border-top:1px solid rgba(248,243,232,0.1);
-  padding-top:20px;text-align:center;
-  font-size:12px;color:rgba(248,243,232,0.5);
+  max-width:1400px;margin:0 auto;
+  border-top:1px solid rgba(168,134,46,0.2);
+  padding-top:24px;text-align:center;
+  font-size:11.5px;color:var(--brown-light);
+  letter-spacing:1px;
+  opacity:0.85;
 }
+.footer-bottom .sep{color:var(--gold-dark);margin:0 10px;opacity:0.6}
 
 /* === WhatsApp Float === */
 .whatsapp-float{
@@ -1187,35 +1239,43 @@ footer{
 
 <!-- Footer -->
 <footer>
+  <div class="footer-brand">
+    <div class="fb-mark"><span class="line"></span><span>Yiwu Wennuan Clothing</span><span class="line"></span></div>
+    <div class="fb-arabic">حجاب فاخر</div>
+    <h4>Crafted with Care, <span class="it">Worn with Grace.</span></h4>
+  </div>
   <div class="footer-inner">
     <div class="footer-col">
-      <h5>Yiwu Wennuan Clothing</h5>
-      <p>Premium hijab manufacturer based in Yiwu, China. Serving global wholesalers since 2004.</p>
+      <h5>About</h5>
+      <p>Premium hijab manufacturer based in Yiwu, China. Serving 500+ global wholesalers across 40+ countries since 2004.</p>
     </div>
     <div class="footer-col">
-      <h5>Product Lines</h5>
-      <a href="#" onclick="filterCategory('Solid Modal')">Solid Modal Hijab</a>
-      <a href="#" onclick="filterCategory('Printed Modal')">Printed Modal Hijab</a>
-      <a href="#" onclick="filterCategory('Bamboo Jersey')">Bamboo Jersey</a>
-      <a href="#" onclick="filterCategory('Liquid Jersey')">Liquid Jersey</a>
+      <h5>Collections</h5>
+      <a href="#" onclick="filterCategory('Solid Modal');return false;">Solid Modal Hijab</a>
+      <a href="#" onclick="filterCategory('Printed Modal');return false;">Printed Modal Hijab</a>
+      <a href="#" onclick="filterCategory('Bamboo Jersey');return false;">Bamboo Jersey</a>
+      <a href="#" onclick="filterCategory('Premium Jersey');return false;">Premium Jersey</a>
+      <a href="#" onclick="filterCategory('Liquid Jersey');return false;">Liquid Jersey</a>
+      <a href="#" onclick="filterCategory('Cotton Jersey');return false;">Cotton Jersey</a>
+      <a href="#" onclick="filterCategory('Instant Cap');return false;">Instant Cap</a>
     </div>
     <div class="footer-col">
-      <h5>Contact & Channels</h5>
-      <a href="https://www.wennuanhijab.com/" target="_blank">🌐 wennuanhijab.com (Official)</a>
-      <a href="https://wennuanfushi.en.alibaba.com/" target="_blank">Alibaba.com Store</a>
+      <h5>Contact</h5>
+      <a href="https://www.wennuanhijab.com/" target="_blank" rel="noopener">wennuanhijab.com</a>
+      <a href="https://wennuanfushi.en.alibaba.com/" target="_blank" rel="noopener">Alibaba.com Store</a>
       <a href="mailto:wennuan@wennuanfactory.com">wennuan@wennuanfactory.com</a>
-      <a href="https://wa.me/8615024597561" target="_blank">WhatsApp: +86 150 2459 7561</a>
+      <a href="https://wa.me/8615024597561" target="_blank" rel="noopener">WhatsApp +86 150 2459 7561</a>
     </div>
     <div class="footer-col">
       <h5>Services</h5>
       <p>OEM / ODM Production</p>
-      <p>Custom Printing & Logo</p>
+      <p>Custom Printing &amp; Logo</p>
       <p>Private Label Solutions</p>
       <p>Sample Service Available</p>
     </div>
   </div>
   <div class="footer-bottom">
-    © 2026 Yiwu Wennuan Clothing Co., Ltd. All rights reserved. &nbsp;|&nbsp; Crafted with ✦ in Yiwu, China
+    © 2026 Yiwu Wennuan Clothing Co., Ltd. <span class="sep">✦</span> All Rights Reserved <span class="sep">✦</span> Crafted in Yiwu, China
   </div>
 </footer>
 
