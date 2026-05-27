@@ -466,6 +466,119 @@ header{
   max-width:580px;margin:18px auto 0;line-height:1.7;
 }
 
+/* === Hero entrance animations + scroll indicator === */
+@keyframes heroFadeUp{
+  from{opacity:0; transform:translateY(28px); filter:blur(6px);}
+  to{opacity:1; transform:translateY(0); filter:blur(0);}
+}
+@keyframes heroBgZoom{
+  from{transform:scale(1.08);}
+  to{transform:scale(1);}
+}
+@keyframes heroScrollPulse{
+  0%,100%{transform:translateX(-50%) translateY(0); opacity:0.85;}
+  50%{transform:translateX(-50%) translateY(8px); opacity:0.5;}
+}
+@keyframes heroLineGrow{
+  from{height:0;}
+  to{height:48px;}
+}
+
+/* Apply a subtle Ken-Burns zoom on the hero background image itself */
+.hero{
+  animation: heroBgZoom 16s ease-out forwards;
+  transform-origin: center 35%;
+}
+
+/* Staggered fade-up for hero text blocks */
+.hero .hero-eyebrow,
+.hero .hero-arabic,
+.hero h2,
+.hero p.subtitle,
+.hero .hero-channels,
+.hero .hero-stats{
+  opacity:0;
+  animation: heroFadeUp 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero .hero-eyebrow  { animation-delay: 0.15s; }
+.hero .hero-arabic   { animation-delay: 0.35s; }
+.hero h2             { animation-delay: 0.55s; }
+.hero p.subtitle     { animation-delay: 0.85s; }
+.hero .hero-channels { animation-delay: 1.10s; }
+.hero .hero-stats    { animation-delay: 1.35s; }
+
+/* Scroll indicator (anchored to hero bottom) */
+.hero-scroll{
+  position:absolute;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  text-decoration:none;
+  color:#FBF7EE;
+  letter-spacing:3px;text-transform:uppercase;
+  font-size:10px;font-weight:600;
+  opacity:0;
+  z-index:5;
+  cursor:pointer;
+  animation: heroFadeUp 1s ease forwards;
+  animation-delay: 1.7s;
+  text-shadow:0 2px 8px rgba(0,0,0,0.4);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.hero-scroll:hover{
+  opacity:1 !important;
+  transform:translateX(-50%) translateY(-4px);
+}
+.hero-scroll .hs-text{
+  margin-bottom:14px;
+  background:linear-gradient(180deg,#FBF7EE 0%,#E8D89E 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+  font-family:'Inter',sans-serif;
+}
+.hero-scroll .hs-line{
+  width:1px;height:48px;
+  background:linear-gradient(180deg,rgba(232,216,158,0.1) 0%,#E8D89E 100%);
+  position:relative;
+  overflow:hidden;
+}
+.hero-scroll .hs-line::after{
+  content:"";position:absolute;left:0;top:0;
+  width:100%;height:30%;
+  background:linear-gradient(180deg,transparent 0%,#FBF7EE 100%);
+  animation: heroScrollPulse 2.4s ease-in-out infinite;
+  animation-delay: 2.6s;
+}
+.hero-scroll .hs-arrow{
+  margin-top:6px;
+  font-size:14px;color:#E8D89E;
+  animation: heroScrollPulse 2.4s ease-in-out infinite;
+  animation-delay: 2.6s;
+  display:inline-block;
+}
+
+@media (max-width:720px){
+  .hero-scroll{bottom:18px;}
+  .hero-scroll .hs-line{height:32px;}
+  .hero-scroll .hs-text{font-size:9px;letter-spacing:2px;margin-bottom:10px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero, .hero .hero-eyebrow, .hero .hero-arabic, .hero h2,
+  .hero p.subtitle, .hero .hero-channels, .hero .hero-stats,
+  .hero-scroll, .hero-scroll .hs-line::after, .hero-scroll .hs-arrow{
+    animation:none !important;
+    opacity:1 !important;
+    transform:translateX(-50%) !important;
+  }
+  .hero .hero-eyebrow, .hero .hero-arabic, .hero h2,
+  .hero p.subtitle, .hero .hero-channels, .hero .hero-stats{
+    transform:none !important;
+    filter:none !important;
+  }
+}
+
 /* === Filter Bar (boutique flat nav) === */
 .filter-bar{
   position:sticky;top:88px;z-index:50;
@@ -1306,6 +1419,11 @@ footer::before{
       </div>
     </div>
   </div>
+  <a href="#explore" class="hero-scroll" onclick="event.preventDefault();document.querySelector('.trust-strip,.cat-nav-wrap,.section-heading').scrollIntoView({behavior:'smooth',block:'start'});" aria-label="Explore the collection">
+    <span class="hs-text">Explore Collection</span>
+    <span class="hs-line"></span>
+    <span class="hs-arrow">↓</span>
+  </a>
 </section>
 
 <!-- Trust Strip -->
