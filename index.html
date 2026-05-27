@@ -314,132 +314,188 @@ header{
   .stat-num{font-size:34px}
 }
 
-/* === Filter Bar === */
+/* === Section Heading (above products) === */
+.section-heading{
+  max-width:1400px;margin:0 auto;
+  padding:80px 24px 32px;
+  text-align:center;
+}
+.section-heading .eyebrow{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold-dark);font-weight:600;
+  margin-bottom:18px;
+}
+.section-heading .eyebrow .line{width:34px;height:1px;background:var(--gold-dark);opacity:0.65}
+.section-heading h3{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px,4vw,52px);
+  font-weight:600;line-height:1.1;
+  color:var(--brown);letter-spacing:-0.5px;
+}
+.section-heading h3 .it{font-style:italic;color:var(--gold-dark);font-weight:500}
+.section-heading p{
+  font-size:15px;color:var(--brown-light);
+  max-width:580px;margin:18px auto 0;line-height:1.7;
+}
+
+/* === Filter Bar (boutique flat nav) === */
 .filter-bar{
-  position:sticky;top:96px;z-index:50;
-  background:rgba(248,243,232,0.95);
-  backdrop-filter:blur(10px);
-  padding:20px 24px;
-  border-bottom:1px solid var(--cream-dark);
+  position:sticky;top:88px;z-index:50;
+  background:rgba(251,247,238,0.92);
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  padding:18px 24px;
+  border-top:1px solid rgba(168,134,46,0.18);
+  border-bottom:1px solid rgba(168,134,46,0.18);
 }
 .filter-inner{
   max-width:1400px;margin:0 auto;
-  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
 }
 .filter-btn{
   background:transparent;
-  border:1.5px solid var(--cream-dark);
-  color:var(--brown);
-  padding:8px 18px;border-radius:20px;
-  font-size:13px;font-weight:500;cursor:pointer;
-  transition:all 0.25s ease;
+  border:none;
+  color:var(--brown-light);
+  padding:10px 18px;border-radius:0;
+  font-size:11.5px;font-weight:600;cursor:pointer;
+  letter-spacing:2px;text-transform:uppercase;
+  position:relative;
+  transition:color 0.25s ease;
   font-family:inherit;
 }
-.filter-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
-.filter-btn.active{
-  background:var(--brown);color:var(--cream);border-color:var(--brown);
+.filter-btn::after{
+  content:"";position:absolute;left:18px;right:18px;bottom:4px;
+  height:1px;background:var(--gold-dark);
+  transform:scaleX(0);transform-origin:center;
+  transition:transform 0.3s ease;
 }
+.filter-btn:hover{color:var(--brown)}
+.filter-btn:hover::after{transform:scaleX(0.6)}
+.filter-btn.active{
+  color:var(--gold-dark);
+}
+.filter-btn.active::after{transform:scaleX(1)}
 
 /* === Products Grid === */
 .products-section{
-  max-width:1400px;margin:0 auto;padding:60px 24px 80px;
+  max-width:1400px;margin:0 auto;padding:48px 24px 100px;
   position:relative;z-index:1;
 }
 .products-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:28px;
+  grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:42px 32px;
 }
 .product-card{
-  background:var(--white);
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
+  background:transparent;
+  border-radius:0;
+  overflow:visible;
+  box-shadow:none;
   transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
   display:flex;flex-direction:column;
   position:relative;
-  border:1px solid transparent;
 }
-.product-card:hover{
-  transform:translateY(-8px);
-  box-shadow:var(--shadow-hover);
-  border-color:rgba(201,168,76,0.3);
-}
+.product-card:hover{transform:translateY(-4px)}
 .product-img-wrap{
   position:relative;width:100%;
-  padding-top:100%;
+  padding-top:118%;
   overflow:hidden;
-  background:linear-gradient(135deg,var(--cream-dark) 0%,var(--cream) 100%);
+  background:linear-gradient(135deg,#F5EFE0 0%,#FBF7EE 100%);
+  border-radius:2px;
+  transition:box-shadow 0.4s ease;
+}
+.product-card:hover .product-img-wrap{
+  box-shadow:0 24px 50px -20px rgba(61,43,31,0.30);
 }
 .product-img{
   position:absolute;top:0;left:0;width:100%;height:100%;
   object-fit:cover;
-  transition:transform 0.6s ease;
+  transition:transform 0.7s ease;
 }
-.product-card:hover .product-img{transform:scale(1.08)}
+.product-card:hover .product-img{transform:scale(1.06)}
 .product-badge{
-  position:absolute;top:12px;left:12px;
-  background:rgba(255,254,251,0.95);
+  position:absolute;top:14px;left:14px;
+  background:rgba(251,247,238,0.95);
   color:var(--brown);
-  padding:4px 12px;border-radius:12px;
-  font-size:11px;font-weight:600;
-  letter-spacing:0.5px;text-transform:uppercase;
+  padding:5px 12px;border-radius:0;
+  font-size:10px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
   backdrop-filter:blur(8px);
+  border:1px solid rgba(168,134,46,0.25);
 }
 .sku-count-badge{
-  position:absolute;top:12px;right:12px;
-  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-  color:#fff;padding:4px 10px;border-radius:12px;
-  font-size:11px;font-weight:700;letter-spacing:0.3px;
-  box-shadow:0 4px 12px rgba(201,168,76,0.35);
+  position:absolute;top:14px;right:14px;
+  background:rgba(26,18,9,0.85);
+  color:var(--gold);
+  padding:5px 11px;border-radius:0;
+  font-size:10px;font-weight:700;letter-spacing:1px;
+  border:1px solid rgba(201,168,76,0.4);
+  backdrop-filter:blur(6px);
 }
-.product-info{padding:20px;flex:1;display:flex;flex-direction:column}
+.product-info{
+  padding:18px 4px 4px;
+  flex:1;display:flex;flex-direction:column;
+  text-align:left;
+}
 .product-name{
   font-family:'Playfair Display',serif;
-  font-size:16px;font-weight:600;line-height:1.3;
+  font-size:16.5px;font-weight:600;line-height:1.35;
   color:var(--brown);
-  margin-bottom:10px;
+  margin-bottom:12px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;min-height:42px;
+  overflow:hidden;min-height:44px;
+  letter-spacing:0.1px;
 }
 .product-meta{
-  display:flex;flex-direction:column;gap:6px;
-  font-size:12px;color:var(--brown-light);
-  margin-bottom:12px;
+  display:flex;flex-direction:column;gap:5px;
+  font-size:11.5px;color:var(--brown-light);
+  margin-bottom:14px;
+  letter-spacing:0.4px;
 }
-.product-meta span{display:flex;align-items:center;gap:6px}
-.product-meta .icon{color:var(--gold-dark);font-size:13px}
+.product-meta span{display:flex;align-items:center;gap:7px}
+.product-meta .icon{color:var(--gold-dark);font-size:11px}
 .product-price{
   font-family:'Playfair Display',serif;
-  font-size:18px;color:var(--gold-dark);font-weight:700;
-  margin-bottom:14px;
+  font-size:19px;color:var(--brown);font-weight:600;
+  margin:6px 0 16px;
+  padding-top:14px;
+  border-top:1px solid rgba(168,134,46,0.22);
+  letter-spacing:0.2px;
 }
 .product-actions{
   display:flex;gap:8px;margin-top:auto;
 }
 .btn-add{
-  flex:1;background:var(--brown);color:var(--cream);
-  border:none;padding:10px;border-radius:8px;
-  font-size:13px;font-weight:600;cursor:pointer;
-  transition:all 0.25s ease;font-family:inherit;
+  flex:1;background:var(--brown);color:#FBF7EE;
+  border:1px solid var(--brown);
+  padding:11px 12px;border-radius:0;
+  font-size:11px;font-weight:700;cursor:pointer;
+  letter-spacing:1.5px;text-transform:uppercase;
+  transition:all 0.3s ease;font-family:inherit;
 }
-.btn-add:hover{background:var(--gold-dark)}
-.btn-add.added{background:var(--gold);color:white}
+.btn-add:hover{background:var(--gold-dark);border-color:var(--gold-dark);color:#1A1209}
+.btn-add.added{background:var(--gold);color:#1A1209;border-color:var(--gold)}
 .btn-view{
-  background:transparent;border:1.5px solid var(--cream-dark);
-  color:var(--brown);padding:10px 14px;border-radius:8px;
+  background:transparent;border:1px solid rgba(61,43,31,0.25);
+  color:var(--brown);padding:11px 14px;border-radius:0;
   font-size:13px;cursor:pointer;text-decoration:none;
   display:flex;align-items:center;
-  transition:all 0.25s ease;
+  transition:all 0.3s ease;
 }
-.btn-view:hover{border-color:var(--gold);color:var(--gold-dark)}
+.btn-view:hover{border-color:var(--brown);color:var(--brown);background:rgba(168,134,46,0.06)}
 .btn-details{
-  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
-  color:white;border:none;padding:10px 12px;border-radius:8px;
-  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
-  transition:all 0.25s ease;
+  background:transparent;
+  border:1px solid var(--gold-dark);
+  color:var(--gold-dark);
+  padding:11px 14px;border-radius:0;
+  font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;
+  letter-spacing:1.5px;text-transform:uppercase;
+  transition:all 0.3s ease;
 }
-.btn-details:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(201,168,76,0.4)}
+.btn-details:hover{
+  background:var(--gold-dark);color:#FBF7EE;
+}
 
 /* === Detail Modal === */
 .detail-overlay{
@@ -1007,6 +1063,13 @@ footer{
     </div>
   </div>
 </section>
+
+<!-- Section Heading -->
+<div class="section-heading">
+  <div class="eyebrow"><span class="line"></span><span>2026 Collection</span><span class="line"></span></div>
+  <h3>The <span class="it">Collection</span></h3>
+  <p>Seven fabric families, twenty-one signature pieces — every hijab is woven, dyed and finished in our own factory in Yiwu, China.</p>
+</div>
 
 <!-- Filter Bar -->
 <div class="filter-bar">
