@@ -13515,17 +13515,18 @@ function openColorPicker(id){
         Click <strong>+</strong> to add a color to your quote, or click the swatch to enlarge.
       </div>
 
-      <div class="sku-grid sku-grid-picker">
+      <div class="sku-grid sku-grid-picker" data-picker-product-id="${id}">
         ${p.skuColors.map(s => {
           const key = id + '::' + s.no;
           const inBag = quoteBasket[key];
           const nameAttr = s.name ? ` — ${s.name.replace(/"/g,'&quot;')}` : '';
           const nameArg = s.name ? `,'${s.name.replace(/'/g,"\\'")}'` : `,''`;
+          const nameTitle = (s.name||'Color #'+s.no).replace(/"/g,'&quot;');
           return `
-          <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no}${nameAttr} — click to enlarge">
+          <div class="sku-swatch ${inBag?'in-basket':''}" data-sku-key="${id}::${s.no}" title="Color #${s.no}${nameAttr} — click to enlarge">
             <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id}${nameArg})">
             <span class="sku-num">${s.name ? s.name : '#'+s.no}</span>
-            <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg});refreshColorPicker(${id});" title="${inBag?'Click to remove '+(s.name||'Color #'+s.no)+' from basket':'Add '+(s.name||'Color #'+s.no)+' to basket'}">${inBag?'✓':'+'}</button>
+            <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg});refreshColorPicker(${id});" title="${inBag?'Click to remove '+nameTitle+' from basket':'Add '+nameTitle+' to basket'}">${inBag?'✓':'+'}</button>
           </div>`;
         }).join('')}
       </div>
@@ -13545,11 +13546,44 @@ function closeColorPicker(){
   document.body.style.overflow = '';
 }
 
-// Re-render picker after add (keeps modal open, updates count & badges)
+// Surgical refresh — DOES NOT rebuild the modal. Only updates per-swatch
+// .in-basket class, +/✓ symbol, title, and the summary counter. Images are
+// never touched → zero re-decode → zero flash on mobile.
 function refreshColorPicker(id){
-  if(document.getElementById('colorOverlay').classList.contains('open')){
+  const overlay = document.getElementById('colorOverlay');
+  if(!overlay || !overlay.classList.contains('open')) return;
+  const grid = overlay.querySelector('[data-picker-product-id="' + id + '"]');
+  if(!grid){
+    // modal contains a different product — fall back to full rebuild only then
     openColorPicker(id);
+    return;
   }
+  const p = products[id];
+  const swatches = grid.querySelectorAll('[data-sku-key]');
+  swatches.forEach(sw => {
+    const key = sw.getAttribute('data-sku-key');
+    const inBag = !!quoteBasket[key];
+    // Update only if state changed (avoids unnecessary repaints)
+    const wasIn = sw.classList.contains('in-basket');
+    if(inBag !== wasIn) sw.classList.toggle('in-basket', inBag);
+    const btn = sw.querySelector('.sku-add-btn');
+    if(btn){
+      const newText = inBag ? '✓' : '+';
+      if(btn.textContent !== newText) btn.textContent = newText;
+      // Update tooltip
+      const skuNo = key.split('::')[1];
+      const sku = p.skuColors.find(s => s.no === skuNo);
+      const label = (sku && sku.name) || ('Color #' + skuNo);
+      btn.title = inBag ? ('Click to remove ' + label + ' from basket')
+                        : ('Add ' + label + ' to basket');
+    }
+  });
+  // Update the summary count + Review Basket button label
+  const variantCount = Object.values(quoteBasket).filter(it => it.productId === id).length;
+  const counter = overlay.querySelector('#cpsSelectedCount');
+  if(counter) counter.textContent = variantCount + ' color' + (variantCount===1?'':'s');
+  const reviewBtn = overlay.querySelector('.btn-add-modal');
+  if(reviewBtn) reviewBtn.textContent = '🛒 Review Basket (' + variantCount + ')';
 }
 
 function copyUSP(id){
@@ -13648,6 +13682,7 @@ function addCurrentSkuToBasket(){
   if(!currentSkuContext) return;
   const {productId, skuNo, image, name} = currentSkuContext;
   addSkuToBasket(productId, skuNo, image, name);
+  refreshColorPicker(productId);  // sync picker if it's open behind the lightbox
   closeSku();
 }
 function closeSku(){
