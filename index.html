@@ -1012,7 +1012,18 @@ header{
   opacity:1;transform:scale(1);background:#2E7D32;
 }
 .sku-add-btn:hover{background:var(--gold-dark);transform:scale(1.15) !important}
-.sku-swatch.in-basket .sku-add-btn:hover{background:#1B5E20}
+/* Hover on already-added: turn red with ✕ to signal "click to remove" */
+.sku-swatch.in-basket .sku-add-btn:hover{
+  background:#C62828;
+}
+.sku-swatch.in-basket .sku-add-btn:hover::before{
+  content:'✕';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:13px;font-weight:700;
+}
+.sku-swatch.in-basket .sku-add-btn:hover{font-size:0}
+/* Smooth color transition */
+.sku-add-btn{transition:background 0.18s ease, transform 0.2s ease}
 
 .sku-badge-inline{
   display:inline-block;background:var(--cream-dark);color:var(--brown);
@@ -12751,8 +12762,14 @@ function basketHasProduct(id){
 function addSkuToBasket(productId, skuNo, skuImage, skuName){
   const key = productId + '::' + skuNo;
   const label = skuName ? skuName : 'Color #' + skuNo;
+  // Toggle: if already in basket, remove it (acts as undo / un-add)
   if(quoteBasket[key]){
-    showToast(label + ' already in basket');
+    delete quoteBasket[key];
+    localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
+    updateBadge();
+    renderProducts();
+    renderDrawer();
+    showToast('✕ ' + label + ' removed');
     return;
   }
   const p = products[productId];
@@ -13440,7 +13457,7 @@ function openColorPicker(id){
           <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no}${nameAttr} — click to enlarge">
             <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id}${nameArg})">
             <span class="sku-num">${s.name ? s.name : '#'+s.no}</span>
-            <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg});refreshColorPicker(${id});" title="Add ${s.name||'Color #'+s.no} to basket">${inBag?'✓':'+'}</button>
+            <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg});refreshColorPicker(${id});" title="${inBag?'Click to remove '+(s.name||'Color #'+s.no)+' from basket':'Add '+(s.name||'Color #'+s.no)+' to basket'}">${inBag?'✓':'+'}</button>
           </div>`;
         }).join('')}
       </div>
@@ -13550,7 +13567,7 @@ function openSkuWithAdd(imgUrl, skuNo, productId, skuName){
   btn.style.display = '';
   const key = productId + '::' + skuNo;
   if(quoteBasket[key]){
-    btn.textContent = '✓ Already in basket — Add another';
+    btn.textContent = '✕ Remove ' + (skuName || 'this color') + ' from basket';
     btn.classList.add('added');
   } else {
     btn.textContent = '+ Add ' + (skuName || 'this color') + ' to basket';
