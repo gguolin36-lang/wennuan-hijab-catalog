@@ -1025,6 +1025,43 @@ header{
 /* Smooth color transition */
 .sku-add-btn{transition:background 0.18s ease, transform 0.2s ease}
 
+/* === Tap feedback (mobile-first; works on PC too) === */
+/* Press-down: shrink + flash darker, simulates a physical button push */
+.sku-add-btn:active{
+  transform:scale(0.82) !important;
+  background:var(--gold-dark);
+  transition:transform 0.05s ease, background 0.05s ease;
+}
+.sku-swatch.in-basket .sku-add-btn:active{
+  background:#1B5E20;
+}
+/* Bounce animation: triggered via JS by adding .tap-bounce */
+@keyframes skuBounce{
+  0%   {transform:scale(1)}
+  25%  {transform:scale(0.78)}
+  55%  {transform:scale(1.18)}
+  78%  {transform:scale(0.94)}
+  100% {transform:scale(1)}
+}
+.sku-add-btn.tap-bounce{
+  animation:skuBounce 0.38s cubic-bezier(0.34,1.56,0.64,1);
+}
+/* Ripple ring effect on tap */
+@keyframes skuRipple{
+  0%   {opacity:0.55;transform:scale(0.6)}
+  60%  {opacity:0.25;transform:scale(1.9)}
+  100% {opacity:0;transform:scale(2.4)}
+}
+.sku-add-btn.tap-bounce::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid var(--gold);
+  pointer-events:none;
+  animation:skuRipple 0.5s ease-out;
+}
+.sku-swatch.in-basket .sku-add-btn.tap-bounce::after{
+  border-color:#2E7D32;
+}
+
 .sku-badge-inline{
   display:inline-block;background:var(--cream-dark);color:var(--brown);
   font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;
@@ -12762,6 +12799,9 @@ function basketHasProduct(id){
 function addSkuToBasket(productId, skuNo, skuImage, skuName){
   const key = productId + '::' + skuNo;
   const label = skuName ? skuName : 'Color #' + skuNo;
+  // Haptic feedback on supported devices (mostly Android Chrome / Edge mobile;
+  // iOS Safari ignores silently — fine, scale animation provides visual proof.)
+  try { if (navigator.vibrate) navigator.vibrate(quoteBasket[key] ? [12,40,12] : 18); } catch(_){}
   // Toggle: if already in basket, remove it (acts as undo / un-add)
   if(quoteBasket[key]){
     delete quoteBasket[key];
@@ -13600,6 +13640,25 @@ renderFilters();
 renderCatNav();
 renderProducts();
 updateBadge();
+
+/* === Tap bounce feedback on SKU add-buttons ===
+ * Event delegation so we don't need to modify every onclick.
+ * Uses pointerdown for instant feedback (before click fires) so the
+ * bounce + ripple coincides with the finger tap, not after the toast. */
+(function(){
+  function trigger(el){
+    if(!el || !el.classList) return;
+    el.classList.remove('tap-bounce');
+    // force reflow so animation can restart on rapid taps
+    void el.offsetWidth;
+    el.classList.add('tap-bounce');
+    setTimeout(()=>el.classList.remove('tap-bounce'), 520);
+  }
+  document.addEventListener('pointerdown', function(ev){
+    const btn = ev.target.closest && ev.target.closest('.sku-add-btn');
+    if(btn) trigger(btn);
+  }, {passive:true});
+})();
 </script>
 </body>
 </html>
