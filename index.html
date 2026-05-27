@@ -12762,7 +12762,7 @@ function renderProducts(){
     const inBasket = hasSku ? basketHasProduct(id) : quoteBasket[id];
     const variantCount = hasSku ? Object.values(quoteBasket).filter(it=>it.productId===id).length : 0;
     return `
-    <div class="product-card">
+    <div class="product-card" id="product-card-${id}" data-product-id="${id}">
       <div class="product-img-wrap">
         <img class="product-img" src="${p.image}" alt="${p.name}" loading="${i<4?'eager':'lazy'}" decoding="async" fetchpriority="${i<4?'high':'auto'}" width="500" height="590" onerror="this.style.background='linear-gradient(135deg,#EDE4CE,#C9A84C)';this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23EDE4CE%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23C9A84C%22 font-family=%22serif%22 font-size=%2220%22%3EHijab%3C/text%3E%3C/svg%3E'">
         <span class="product-badge">${p.category}</span>
@@ -12780,7 +12780,7 @@ function renderProducts(){
         </div>
         <div class="product-price">${p.price}</div>
         <div class="product-actions">
-          <button class="btn-add ${inBasket?'added':''}" onclick="toggleBasket(${id})">
+          <button class="btn-add ${inBasket?'added':''}" data-add-btn="${id}" onclick="toggleBasket(${id})">
             ${hasSku
               ? (inBasket ? `✓ ${variantCount} color${variantCount>1?'s':''}` : '🎨 Choose Color')
               : (inBasket ? '✓ Added' : '+ Quote')}
@@ -12796,6 +12796,32 @@ function renderProducts(){
 function basketHasProduct(id){
   return Object.values(quoteBasket).some(it => it.productId === id);
 }
+
+/* Lightweight per-card refresh — no full re-render, no image flash.
+ * Only mutates: the "+ Quote / 🎨 Choose Color / ✓ N colors" button text + .added class.
+ * Call this from add/remove instead of renderProducts() to avoid the iOS img repaint flash. */
+function updateProductCardState(id){
+  const card = document.getElementById('product-card-' + id);
+  if(!card) return;  // card not in current filter view — nothing to update
+  const btn = card.querySelector('[data-add-btn="' + id + '"]');
+  if(!btn) return;
+  const p = products[id];
+  const hasSku = p && p.skuColors && p.skuColors.length;
+  const inBasket = hasSku ? basketHasProduct(id) : !!quoteBasket[id];
+  const variantCount = hasSku ? Object.values(quoteBasket).filter(it=>it.productId===id).length : 0;
+  btn.classList.toggle('added', !!inBasket);
+  btn.textContent = hasSku
+    ? (inBasket ? `✓ ${variantCount} color${variantCount>1?'s':''}` : '🎨 Choose Color')
+    : (inBasket ? '✓ Added' : '+ Quote');
+}
+
+/* Refresh state for ALL visible cards — used by bulk operations
+ * (clear all, remove-all-variants) without touching <img> nodes. */
+function updateAllProductCardStates(){
+  document.querySelectorAll('[data-product-id]').forEach(card=>{
+    updateProductCardState(parseInt(card.dataset.productId,10));
+  });
+}
 function addSkuToBasket(productId, skuNo, skuImage, skuName){
   const key = productId + '::' + skuNo;
   const label = skuName ? skuName : 'Color #' + skuNo;
@@ -12807,7 +12833,7 @@ function addSkuToBasket(productId, skuNo, skuImage, skuName){
     delete quoteBasket[key];
     localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
     updateBadge();
-    renderProducts();
+    updateProductCardState(productId);  // lightweight refresh — no image flash
     renderDrawer();
     showToast('✕ ' + label + ' removed');
     return;
@@ -12817,15 +12843,17 @@ function addSkuToBasket(productId, skuNo, skuImage, skuName){
   quoteBasket[key] = {productId, qty: defaultQty, sku: skuNo, skuImage, skuName: skuName||''};
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   updateBadge();
-  renderProducts();
+  updateProductCardState(productId);  // lightweight refresh — no image flash
   renderDrawer();
   showToast('✓ ' + label + ' added — ' + defaultQty + ' pcs');
 }
 function removeBasketKey(key){
+  const item = quoteBasket[key];
+  const affectedPid = item ? item.productId : null;
   delete quoteBasket[key];
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   updateBadge();
-  renderProducts();
+  if(affectedPid != null) updateProductCardState(affectedPid);
   renderDrawer();
   showToast('Removed from basket');
 }
@@ -12847,7 +12875,7 @@ function toggleBasket(id){
   }
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   updateBadge();
-  renderProducts();
+  updateProductCardState(id);  // lightweight refresh — no image flash
   renderDrawer();
 }
 
@@ -12969,7 +12997,7 @@ function removeAllVariants(productId){
   });
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
   updateBadge();
-  renderProducts();
+  updateProductCardState(productId);  // lightweight refresh — no image flash
   renderDrawer();
   showToast('All variants removed');
 }
