@@ -42,141 +42,253 @@ body{
   background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23C9A84C' d='M40 0L50 30L80 40L50 50L40 80L30 50L0 40L30 30z'/%3E%3C/svg%3E");
 }
 
-/* === Top Bar === */
+/* === Top Bar (luxury black + gold) === */
 .topbar{
-  background:linear-gradient(135deg,var(--brown) 0%,#2A1E15 100%);
-  color:var(--cream);
-  padding:8px 0;font-size:13px;
+  background:#0E0A06;
+  color:rgba(248,243,232,0.85);
+  padding:10px 0;font-size:12px;
+  letter-spacing:0.6px;
   position:relative;z-index:10;
+  border-bottom:1px solid rgba(201,168,76,0.15);
 }
 .topbar-inner{
-  max-width:1400px;margin:0 auto;padding:0 24px;
+  max-width:1400px;margin:0 auto;padding:0 28px;
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
 }
-.topbar a{color:var(--gold);text-decoration:none;margin-left:16px}
-.topbar a:hover{color:var(--cream)}
+.topbar-left{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.topbar-left span.dot{color:var(--gold);opacity:0.55}
+.topbar a{color:var(--gold);text-decoration:none;margin-left:20px;transition:color .25s;font-weight:500}
+.topbar a:hover{color:#F4E0A1}
 
-/* === Header === */
+/* === Header (sticky, glass, serif brand) === */
 header{
-  background:var(--white);
-  padding:24px 0;
-  border-bottom:1px solid var(--cream-dark);
+  background:rgba(255,254,251,0.92);
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  padding:18px 0;
+  border-bottom:1px solid rgba(201,168,76,0.18);
   position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(61,43,31,0.04);
+  box-shadow:0 1px 0 rgba(61,43,31,0.04), 0 8px 24px -16px rgba(61,43,31,0.12);
 }
 .header-inner{
-  max-width:1400px;margin:0 auto;padding:0 24px;
+  max-width:1400px;margin:0 auto;padding:0 28px;
   display:flex;justify-content:space-between;align-items:center;gap:24px;
 }
-.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--brown)}
+.brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--brown)}
 .brand-logo{
-  width:48px;height:48px;border-radius:50%;
-  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  position:relative;
+  width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,#F2DA92 0%,var(--gold) 38%,var(--gold-dark) 100%);
   display:flex;align-items:center;justify-content:center;
-  color:white;font-family:'Amiri',serif;font-size:24px;font-weight:700;
-  box-shadow:0 4px 12px rgba(201,168,76,0.3);
+  color:#FFFEFB;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;
+  font-style:italic;
+  box-shadow:0 6px 20px rgba(168,134,46,0.35), inset 0 0 0 1px rgba(255,255,255,0.25);
 }
-.brand-text h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.1}
-.brand-text p{font-size:11px;color:var(--brown-light);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.brand-logo::before{
+  content:"";position:absolute;inset:-5px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.45);
+  pointer-events:none;
+}
+.brand-text h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.05;letter-spacing:0.2px}
+.brand-text p{font-size:10.5px;color:var(--brown-light);letter-spacing:2.2px;text-transform:uppercase;margin-top:4px;font-weight:500}
 
 .header-actions{display:flex;gap:12px;align-items:center}
 .btn-quote{
-  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-  color:white;border:none;padding:10px 20px;border-radius:24px;
-  font-size:14px;font-weight:600;cursor:pointer;
-  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,#1A1209 0%,#3D2B1F 100%);
+  color:var(--gold);
+  border:1px solid rgba(201,168,76,0.5);
+  padding:11px 22px;border-radius:30px;
+  font-size:13px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
   transition:all 0.3s ease;
-  box-shadow:0 4px 12px rgba(201,168,76,0.3);
+  box-shadow:0 4px 14px rgba(0,0,0,0.12);
 }
-.btn-quote:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,168,76,0.4)}
+.btn-quote:hover{
+  transform:translateY(-2px);
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+  color:#1A1209;
+  border-color:var(--gold);
+  box-shadow:0 10px 24px rgba(201,168,76,0.35);
+}
 .quote-badge{
-  background:white;color:var(--gold-dark);
+  background:var(--gold);color:#1A1209;
   border-radius:50%;width:22px;height:22px;
   display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:700;
+  transition:all 0.3s;
 }
+.btn-quote:hover .quote-badge{background:#1A1209;color:var(--gold)}
 
-/* === Hero === */
+/* === Hero (dark luxury, full-bleed) === */
 .hero{
   position:relative;
-  padding:80px 24px 100px;
+  padding:110px 24px 120px;
   text-align:center;
   background:
-    linear-gradient(180deg,transparent 0%,var(--cream) 100%),
-    radial-gradient(ellipse at center,rgba(201,168,76,0.12) 0%,transparent 70%);
+    radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.22) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(201,168,76,0.10) 0%,transparent 50%),
+    linear-gradient(180deg,#0E0A06 0%,#1A1209 60%,#2A1E15 100%);
+  color:#F8F3E8;
+  overflow:hidden;
   z-index:1;
 }
+.hero::before{
+  /* fine gold framing lines */
+  content:"";position:absolute;inset:36px;
+  border:1px solid rgba(201,168,76,0.22);
+  pointer-events:none;
+}
+.hero::after{
+  content:"";position:absolute;inset:42px;
+  border:1px solid rgba(201,168,76,0.10);
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:2;max-width:980px;margin:0 auto;animation:heroFade 1.1s ease both}
+@keyframes heroFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);font-weight:500;
+  margin-bottom:24px;opacity:0.9;
+}
+.hero-eyebrow .line{width:34px;height:1px;background:var(--gold);opacity:0.6}
 .hero-arabic{
-  font-family:'Amiri',serif;font-size:32px;color:var(--gold);
-  margin-bottom:8px;opacity:0.6;letter-spacing:2px;
+  font-family:'Amiri',serif;font-size:38px;color:var(--gold);
+  margin-bottom:14px;opacity:0.85;letter-spacing:2px;
+  text-shadow:0 2px 24px rgba(201,168,76,0.4);
 }
 .hero h2{
   font-family:'Playfair Display',serif;
-  font-size:clamp(36px,5vw,56px);
-  font-weight:700;line-height:1.1;
-  color:var(--brown);
-  margin-bottom:20px;
-  letter-spacing:-1px;
+  font-size:clamp(40px,5.6vw,68px);
+  font-weight:700;line-height:1.08;
+  color:#F8F3E8;
+  margin-bottom:22px;
+  letter-spacing:-0.5px;
 }
 .hero h2 .gold{
-  color:var(--gold-dark);
-  font-style:italic;
+  background:linear-gradient(135deg,#F4E0A1 0%,var(--gold) 50%,#A8862E 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-style:italic;font-weight:600;
 }
 .hero p.subtitle{
-  font-size:18px;color:var(--brown-light);
-  max-width:680px;margin:0 auto 32px;
+  font-size:17px;color:rgba(248,243,232,0.78);
+  max-width:680px;margin:0 auto 8px;
+  line-height:1.7;font-weight:300;
+}
+.hero-divider{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:32px auto 0;max-width:120px;
+}
+.hero-divider .ln{flex:1;height:1px;background:rgba(201,168,76,0.45)}
+.hero-divider .dia{
+  width:8px;height:8px;background:var(--gold);
+  transform:rotate(45deg);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.15);
 }
 .hero-stats{
-  display:flex;justify-content:center;gap:48px;flex-wrap:wrap;
-  margin-top:40px;
+  display:flex;justify-content:center;gap:0;flex-wrap:wrap;
+  margin-top:46px;
+  border-top:1px solid rgba(201,168,76,0.18);
+  border-bottom:1px solid rgba(201,168,76,0.18);
+  padding:24px 0;
 }
-.stat{text-align:center}
+.stat{
+  text-align:center;padding:0 38px;
+  border-right:1px solid rgba(201,168,76,0.18);
+  min-width:140px;
+}
+.stat:last-child{border-right:none}
 .stat-num{
-  font-family:'Playfair Display',serif;font-size:36px;
-  color:var(--gold-dark);font-weight:700;
+  font-family:'Playfair Display',serif;font-size:42px;
+  color:#F4E0A1;font-weight:700;line-height:1;
 }
-.stat-label{font-size:13px;color:var(--brown-light);text-transform:uppercase;letter-spacing:1.5px}
+.stat-label{
+  font-size:10.5px;color:rgba(248,243,232,0.65);
+  text-transform:uppercase;letter-spacing:2.5px;margin-top:8px;font-weight:500;
+}
 
 /* === Hero Channels === */
 .hero-channels{
   display:flex;justify-content:center;gap:18px;flex-wrap:wrap;
-  margin-top:44px;padding:0 20px;
+  margin-top:48px;padding:0 20px;
+  position:relative;z-index:2;
 }
 .channel-btn{
   display:flex;align-items:center;gap:14px;
-  padding:16px 22px;border-radius:14px;
+  padding:16px 24px;border-radius:4px;
   text-decoration:none;min-width:300px;max-width:380px;
-  transition:all 0.3s ease;text-align:left;
-  border:1.5px solid transparent;
+  transition:all 0.35s ease;text-align:left;
+  border:1px solid rgba(201,168,76,0.4);
+  background:rgba(255,254,251,0.04);
+  backdrop-filter:blur(6px);
 }
 .channel-primary{
-  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
-  color:white;box-shadow:0 8px 24px rgba(201,168,76,0.3);
+  background:linear-gradient(135deg,var(--gold) 0%,#A8862E 100%);
+  color:#1A1209;border-color:var(--gold);
+  box-shadow:0 10px 28px rgba(201,168,76,0.28);
 }
 .channel-primary:hover{
   transform:translateY(-3px);
-  box-shadow:0 14px 32px rgba(201,168,76,0.45);
+  box-shadow:0 18px 36px rgba(201,168,76,0.4);
 }
 .channel-secondary{
-  background:var(--white);color:var(--brown);
-  border-color:var(--cream-dark);
+  color:#F8F3E8;
 }
 .channel-secondary:hover{
   transform:translateY(-3px);
+  background:rgba(201,168,76,0.10);
   border-color:var(--gold);
-  box-shadow:0 10px 28px rgba(61,43,31,0.12);
 }
-.ch-icon{font-size:26px;flex-shrink:0}
+.ch-icon{font-size:24px;flex-shrink:0;opacity:0.9}
 .ch-text{flex:1;display:flex;flex-direction:column;line-height:1.3}
-.ch-text strong{font-size:14px;font-weight:700;letter-spacing:0.3px;margin-bottom:3px}
+.ch-text strong{font-size:14px;font-weight:700;letter-spacing:0.4px;margin-bottom:3px}
 .ch-text em{
-  font-size:11px;font-style:normal;opacity:0.85;
+  font-size:11px;font-style:normal;opacity:0.78;
+  letter-spacing:0.3px;
+}
+.channel-primary .ch-text em{color:rgba(26,18,9,0.78)}
+.ch-arrow{font-size:18px;font-weight:300;opacity:0.7;flex-shrink:0;transition:transform 0.3s}
+.channel-btn:hover .ch-arrow{transform:translateX(5px);opacity:1}
+
+/* === Trust Strip (right under hero, on cream) === */
+.trust-strip{
+  position:relative;z-index:2;
+  background:var(--white);
+  border-bottom:1px solid var(--cream-dark);
+  padding:32px 24px;
+  box-shadow:0 -20px 40px -20px rgba(0,0,0,0.18);
+}
+.trust-grid{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+}
+.trust-item{
+  text-align:center;padding:8px 22px;
+  border-right:1px solid var(--cream-dark);
+}
+.trust-item:last-child{border-right:none}
+.trust-icon{
+  font-size:26px;color:var(--gold-dark);
+  margin-bottom:10px;
+}
+.trust-title{
+  font-family:'Playfair Display',serif;font-size:16px;
+  color:var(--brown);font-weight:600;margin-bottom:4px;
   letter-spacing:0.2px;
 }
-.channel-primary .ch-text em{color:rgba(255,255,255,0.9)}
-.channel-secondary .ch-text em{color:var(--brown-light)}
-.ch-arrow{font-size:20px;font-weight:300;opacity:0.7;flex-shrink:0;transition:transform 0.3s}
-.channel-btn:hover .ch-arrow{transform:translateX(4px);opacity:1}
+.trust-sub{
+  font-size:12px;color:var(--brown-light);
+  letter-spacing:0.8px;text-transform:uppercase;
+}
+@media(max-width:900px){
+  .trust-grid{grid-template-columns:repeat(2,1fr);gap:6px 0}
+  .trust-item{border-right:none;border-bottom:1px solid var(--cream-dark);padding:18px}
+  .trust-item:nth-child(odd){border-right:1px solid var(--cream-dark)}
+  .trust-item:nth-last-child(-n+2){border-bottom:none}
+  .stat{padding:0 22px;min-width:120px}
+  .stat-num{font-size:34px}
+}
 
 /* === Filter Bar === */
 .filter-bar{
@@ -783,10 +895,17 @@ footer{
 <!-- Top Bar -->
 <div class="topbar">
   <div class="topbar-inner">
-    <span>📦 Worldwide Shipping &nbsp;|&nbsp; 🏆 20+ Years Manufacturer &nbsp;|&nbsp; ✅ OEKO-TEX Certified</span>
+    <span class="topbar-left">
+      <span>EST. 2004 · YIWU, CHINA</span>
+      <span class="dot">◆</span>
+      <span>OEKO-TEX&reg; CERTIFIED</span>
+      <span class="dot">◆</span>
+      <span>WORLDWIDE WHOLESALE</span>
+    </span>
     <span>
+      <a href="https://www.wennuanhijab.com/" target="_blank">Official Site</a>
       <a href="https://wennuanfushi.en.alibaba.com/" target="_blank">Alibaba Store</a>
-      <a href="mailto:wennuan@wennuanfactory.com">Email Us</a>
+      <a href="mailto:wennuan@wennuanfactory.com">Contact</a>
     </span>
   </div>
 </div>
@@ -813,26 +932,56 @@ footer{
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-arabic">حجاب فاخر</div>
-  <h2>Crafted with Care,<br><span class="gold">Worn with Grace</span></h2>
-  <p class="subtitle">Discover our 2026 collection of premium hijabs — Modal, Jersey, Bamboo and more.<br>Trusted by 500+ wholesalers across 40+ countries.</p>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Years Experience</div></div>
-    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Global Clients</div></div>
-    <div class="stat"><div class="stat-num">100</div><div class="stat-label">Pieces MOQ</div></div>
-    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Product Lines</div></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="line"></span><span>Premium Hijab Manufacturer · 2026 Collection</span><span class="line"></span></div>
+    <div class="hero-arabic">حجاب فاخر</div>
+    <h2>Crafted with Care,<br><span class="gold">Worn with Grace</span></h2>
+    <p class="subtitle">A curated 2026 collection of premium hijabs — Modal, Jersey, Bamboo, Liquid &amp; Instant Cap.<br>Trusted by 500+ wholesalers across 40+ countries.</p>
+    <div class="hero-divider"><span class="ln"></span><span class="dia"></span><span class="ln"></span></div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Global Clients</div></div>
+      <div class="stat"><div class="stat-num">100</div><div class="stat-label">Pieces MOQ</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Product Lines</div></div>
+    </div>
+    <div class="hero-channels">
+      <a href="https://www.wennuanhijab.com/" target="_blank" class="channel-btn channel-primary">
+        <span class="ch-icon">✦</span>
+        <span class="ch-text"><strong>Visit Official Website</strong><em>wennuanhijab.com — full catalog &amp; company info</em></span>
+        <span class="ch-arrow">→</span>
+      </a>
+      <a href="https://wennuanfushi.en.alibaba.com/" target="_blank" class="channel-btn channel-secondary">
+        <span class="ch-icon">◆</span>
+        <span class="ch-text"><strong>Alibaba.com Verified Store</strong><em>Trade Assurance · Secure payment</em></span>
+        <span class="ch-arrow">→</span>
+      </a>
+    </div>
   </div>
-  <div class="hero-channels">
-    <a href="https://www.wennuanhijab.com/" target="_blank" class="channel-btn channel-primary">
-      <span class="ch-icon">🌐</span>
-      <span class="ch-text"><strong>Visit Official Website</strong><em>wennuanhijab.com — full catalog & company info</em></span>
-      <span class="ch-arrow">→</span>
-    </a>
-    <a href="https://wennuanfushi.en.alibaba.com/" target="_blank" class="channel-btn channel-secondary">
-      <span class="ch-icon">🛒</span>
-      <span class="ch-text"><strong>Alibaba.com Verified Store</strong><em>Trade Assurance · Secure payment</em></span>
-      <span class="ch-arrow">→</span>
-    </a>
+</section>
+
+<!-- Trust Strip -->
+<section class="trust-strip">
+  <div class="trust-grid">
+    <div class="trust-item">
+      <div class="trust-icon">✦</div>
+      <div class="trust-title">20+ Years Heritage</div>
+      <div class="trust-sub">Family-owned since 2004</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">◇</div>
+      <div class="trust-title">OEKO-TEX Certified</div>
+      <div class="trust-sub">Eco-friendly textiles</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">◆</div>
+      <div class="trust-title">Low 100-pc MOQ</div>
+      <div class="trust-sub">Boutique-friendly orders</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">✧</div>
+      <div class="trust-title">40+ Countries Served</div>
+      <div class="trust-sub">Global wholesale logistics</div>
+    </div>
   </div>
 </section>
 
