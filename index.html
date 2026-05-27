@@ -316,11 +316,136 @@ header{
   .stat-num{font-size:34px}
 }
 
+/* === Category Visual Nav (horizontal thumbnail scroll) === */
+.cat-nav-wrap{
+  background:linear-gradient(180deg,#FBF7EE 0%,#F5EFE0 100%);
+  padding:48px 0 8px;
+  position:relative;
+}
+.cat-nav-inner{
+  max-width:1400px;margin:0 auto;
+  position:relative;
+  padding:0 56px;
+}
+.cat-nav{
+  display:flex;gap:18px;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-behavior:smooth;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding:6px 4px 18px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(168,134,46,0.4) transparent;
+}
+.cat-nav::-webkit-scrollbar{height:4px}
+.cat-nav::-webkit-scrollbar-track{background:transparent}
+.cat-nav::-webkit-scrollbar-thumb{
+  background:rgba(168,134,46,0.4);border-radius:2px;
+}
+.cat-card{
+  flex:0 0 auto;
+  scroll-snap-align:center;
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;
+  background:transparent;border:none;
+  font-family:inherit;
+  padding:0;
+  transition:transform 0.3s ease;
+  width:118px;
+}
+.cat-card:hover{transform:translateY(-4px)}
+.cat-thumb{
+  width:96px;height:96px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#FBF7EE;
+  border:2px solid transparent;
+  padding:3px;
+  position:relative;
+  transition:all 0.35s ease;
+  display:flex;align-items:center;justify-content:center;
+}
+.cat-thumb img{
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  transition:transform 0.5s ease;
+}
+.cat-thumb .cat-icon{
+  font-size:32px;color:var(--gold-dark);
+  letter-spacing:2px;
+}
+.cat-card:hover .cat-thumb{
+  border-color:rgba(168,134,46,0.45);
+  box-shadow:0 12px 28px -10px rgba(168,134,46,0.4);
+}
+.cat-card:hover .cat-thumb img{transform:scale(1.08)}
+.cat-card.active .cat-thumb{
+  border-color:var(--gold-dark);
+  box-shadow:0 0 0 1px var(--gold-dark), 0 10px 24px -8px rgba(168,134,46,0.5);
+}
+.cat-card.active .cat-thumb::after{
+  content:"";position:absolute;inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at center,transparent 60%,rgba(168,134,46,0.08) 100%);
+  pointer-events:none;
+}
+.cat-label{
+  margin-top:12px;
+  font-family:'Playfair Display',serif;
+  font-size:13px;font-weight:600;
+  color:var(--brown);
+  text-align:center;
+  line-height:1.25;
+  letter-spacing:0.1px;
+  transition:color 0.25s ease;
+}
+.cat-card.active .cat-label{color:var(--gold-dark)}
+.cat-count{
+  display:block;
+  font-family:'Inter',sans-serif;
+  font-size:10px;color:var(--brown-light);
+  font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  margin-top:3px;
+  opacity:0.8;
+}
+.cat-nav-arrow{
+  position:absolute;top:50%;
+  transform:translateY(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(251,247,238,0.92);
+  border:1px solid rgba(168,134,46,0.3);
+  color:var(--gold-dark);
+  font-size:20px;line-height:1;
+  cursor:pointer;
+  z-index:3;
+  font-family:serif;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+  transition:all 0.25s ease;
+  box-shadow:0 4px 12px -2px rgba(61,43,31,0.12);
+}
+.cat-nav-arrow:hover{
+  background:var(--brown);color:var(--gold);
+  border-color:var(--brown);
+}
+.cat-nav-prev{left:8px}
+.cat-nav-next{right:8px}
+@media (max-width:720px){
+  .cat-nav-inner{padding:0 12px}
+  .cat-nav-arrow{display:none}
+  .cat-thumb{width:80px;height:80px}
+  .cat-card{width:96px}
+  .cat-label{font-size:12px}
+}
+
 /* === Section Heading (above products) === */
 .section-heading{
   max-width:1400px;margin:0 auto;
-  padding:80px 24px 32px;
+  padding:36px 24px 32px;
   text-align:center;
+  background:linear-gradient(180deg,#F5EFE0 0%,#FBF7EE 100%);
 }
 .section-heading .eyebrow{
   display:inline-flex;align-items:center;gap:14px;
@@ -1208,6 +1333,15 @@ footer::before{
     </div>
   </div>
 </section>
+
+<!-- Category Visual Nav -->
+<div class="cat-nav-wrap">
+  <div class="cat-nav-inner">
+    <button class="cat-nav-arrow cat-nav-prev" onclick="scrollCatNav(-1)" aria-label="Scroll left">‹</button>
+    <div class="cat-nav" id="catNav"></div>
+    <button class="cat-nav-arrow cat-nav-next" onclick="scrollCatNav(1)" aria-label="Scroll right">›</button>
+  </div>
+</div>
 
 <!-- Section Heading -->
 <div class="section-heading">
@@ -12189,10 +12323,54 @@ function renderFilters(){
   ).join('');
 }
 
+// Build a category → representative image map (first product of each category)
+function buildCatThumbs(){
+  const m = {};
+  products.forEach(p => { if(!m[p.category]) m[p.category] = p.image; });
+  return m;
+}
+
+function renderCatNav(){
+  const nav = document.getElementById('catNav');
+  if(!nav) return;
+  const thumbs = buildCatThumbs();
+  const counts = {};
+  products.forEach(p => { counts[p.category] = (counts[p.category]||0) + 1; });
+  counts['All'] = products.length;
+
+  nav.innerHTML = categories.map(c => {
+    const active = c === currentFilter ? 'active' : '';
+    const isAll = c === 'All';
+    const thumb = isAll
+      ? `<div class="cat-thumb"><span class="cat-icon">✦</span></div>`
+      : `<div class="cat-thumb"><img src="${thumbs[c]}" alt="${c}" loading="lazy"></div>`;
+    return `
+      <button class="cat-card ${active}" onclick="filterCategory('${c}')" data-cat="${c}">
+        ${thumb}
+        <span class="cat-label">${c}</span>
+        <span class="cat-count">${counts[c]||0} item${counts[c]===1?'':'s'}</span>
+      </button>`;
+  }).join('');
+}
+
+function scrollCatNav(dir){
+  const nav = document.getElementById('catNav');
+  if(!nav) return;
+  nav.scrollBy({ left: dir * 280, behavior: 'smooth' });
+}
+
 function filterCategory(cat){
   currentFilter = cat;
   renderFilters();
+  renderCatNav();
   renderProducts();
+  // Center the active card in the cat-nav
+  setTimeout(()=>{
+    const card = document.querySelector(`.cat-card[data-cat="${cat}"]`);
+    if(card && card.scrollIntoView){
+      try{ card.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }catch(e){}
+    }
+  }, 30);
   document.querySelector('.products-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -13060,6 +13238,7 @@ document.addEventListener('keydown', e => {
 
 // Init
 renderFilters();
+renderCatNav();
 renderProducts();
 updateBadge();
 </script>
