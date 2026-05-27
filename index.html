@@ -637,6 +637,47 @@ header{
   background:var(--cream-dark);color:var(--brown);
   padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;
 }
+/* === Color Picker modal (SKU-only) === */
+.color-picker-header{position:relative}
+.color-picker-summary{
+  background:linear-gradient(180deg,#FBF7EE 0%,#F5EFE0 100%);
+  border:1px solid rgba(168,134,46,0.25);
+  border-radius:2px;
+  padding:18px 22px;
+  margin-bottom:18px;
+}
+.color-picker-summary .cps-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid rgba(168,134,46,0.12);
+}
+.color-picker-summary .cps-row:last-child{border-bottom:none}
+.color-picker-summary .cps-label{
+  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--brown-light);font-weight:600;
+}
+.color-picker-summary .cps-value{
+  font-family:'Playfair Display',serif;
+  font-size:15px;color:var(--brown);font-weight:600;
+}
+.color-picker-hint{
+  font-size:13px;color:var(--brown-light);
+  text-align:center;
+  margin-bottom:20px;
+  padding:10px;
+  background:rgba(201,168,76,0.06);
+  border-left:2px solid var(--gold-dark);
+  letter-spacing:0.3px;
+}
+.color-picker-hint strong{color:var(--gold-dark);font-weight:700}
+.sku-grid-picker{margin-bottom:24px}
+.detail-color-hint{
+  background:rgba(201,168,76,0.05);
+  border-left:2px solid var(--gold-dark);
+  padding:16px 20px;
+  border-radius:0 2px 2px 0;
+}
+
 .detail-actions{
   display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;
   padding-top:24px;border-top:1px solid var(--cream-dark);
@@ -1195,6 +1236,10 @@ footer::before{
 <!-- Detail Modal -->
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetails()">
   <div class="detail-modal" id="detailModal"></div>
+</div>
+
+<div class="detail-overlay" id="colorOverlay" onclick="if(event.target===this)closeColorPicker()">
+  <div class="detail-modal" id="colorModal"></div>
 </div>
 
 <!-- SKU Lightbox -->
@@ -12219,28 +12264,11 @@ function removeBasketKey(key){
   showToast('Removed from basket');
 }
 function toggleBasket(id){
-  // For Solid Modal: open details modal instead so user must pick a color
+  // For products with SKU colors: always open the dedicated color picker
+  // (whether the user wants to add a new color or manage existing selections)
   const p = products[id];
   if(p && p.skuColors && p.skuColors.length){
-    if(basketHasProduct(id)){
-      // Remove ALL color variants of this product
-      Object.keys(quoteBasket).forEach(k => {
-        if(quoteBasket[k].productId === id) delete quoteBasket[k];
-      });
-      localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
-      updateBadge();
-      renderProducts();
-      renderDrawer();
-      showToast('All color variants removed');
-    } else {
-      // Open details so user picks color
-      openDetails(id);
-      setTimeout(() => {
-        const grid = document.querySelector('.detail-modal .sku-grid');
-        if(grid) grid.scrollIntoView({behavior:'smooth', block:'center'});
-      }, 300);
-      showToast('👇 Please choose a color first');
-    }
+    openColorPicker(id);
     return;
   }
   // Non-SKU products: legacy behavior
@@ -12361,7 +12389,7 @@ function renderDrawer(){
             <button class="variant-remove" onclick="removeBasketKey('${e.key}')" title="Remove this color">×</button>
           </div>`;
         }).join('')}
-        <button class="add-more-colors" onclick="closeDrawer();openDetails(${pid});setTimeout(()=>{const g=document.querySelector('.detail-modal .sku-grid');if(g)g.scrollIntoView({behavior:'smooth',block:'center'})},350)">
+        <button class="add-more-colors" onclick="closeDrawer();setTimeout(()=>openColorPicker(${pid}),250)">
           + Add another color
         </button>
       </div>
@@ -12815,31 +12843,20 @@ function openDetails(id){
       </div>
 
       ${p.skuColors ? `
-      <div class="detail-section">
-        <h4>🎨 Available in ${p.skuColors.length} Colors — ${p.skuLabel || 'Live Color Chart'}</h4>
-        ${p.skuSourceUrl ? `<p style="font-size:13px;color:var(--brown-light);margin-bottom:14px;"><a href="${p.skuSourceUrl}" target="_blank" style="color:var(--gold-dark);font-weight:600;">Source ↗</a></p>` : ''}
-        <div class="sku-grid">
-          ${p.skuColors.map(s => {
-            const key = id + '::' + s.no;
-            const inBag = quoteBasket[key];
-            const nameAttr = s.name ? ` — ${s.name.replace(/"/g,'&quot;')}` : '';
-            const nameArg = s.name ? `,'${s.name.replace(/'/g,"\\'")}'` : `,''`;
-            return `
-            <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no}${nameAttr} — click to enlarge">
-              <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id}${nameArg})">
-              <span class="sku-num">${s.name ? s.name : '#'+s.no}</span>
-              <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg})" title="Add ${s.name||'Color #'+s.no} to basket">${inBag?'✓':'+'}</button>
-            </div>`;
-          }).join('')}
-        </div>
+      <div class="detail-section detail-color-hint">
+        <h4>🎨 Available in ${p.skuColors.length} Colors</h4>
+        <p style="font-size:14px;line-height:1.7;color:var(--brown);margin-bottom:14px;">
+          This product is available in <strong>${p.skuColors.length} colors</strong>${p.skuLabel?` from the <em>${p.skuLabel}</em>`:''}.
+          Use the dedicated color picker to browse swatches and add specific colors to your quote.
+        </p>
       </div>
       ` : ''}
 
       <div class="detail-actions">
         <button class="btn-copy-usp" onclick="copyUSP(${id})">📋 Copy Full USP</button>
         ${p.skuColors ? `
-          <button class="btn-add-modal" onclick="document.querySelector('.detail-modal .sku-grid').scrollIntoView({behavior:'smooth',block:'center'});showToast('👆 Click a color swatch to add');">
-            ${basketHasProduct(id)?'✓ Variants in Basket':'🎨 Choose Color to Add'}
+          <button class="btn-add-modal" onclick="closeDetails();setTimeout(()=>openColorPicker(${id}),250);">
+            🎨 ${basketHasProduct(id)?'Manage Colors':'Choose Color →'}
           </button>
         ` : `
           <button class="btn-add-modal" onclick="toggleBasket(${id});closeDetails();">${inBasket?'✓ In Basket':'+ Add to Quote'}</button>
@@ -12854,6 +12871,81 @@ function openDetails(id){
 function closeDetails(){
   document.getElementById('detailOverlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// ===== Color Picker (SKU-only modal) =====
+function openColorPicker(id){
+  const p = products[id];
+  if(!p || !p.skuColors || !p.skuColors.length){
+    // fallback for non-SKU products
+    toggleBasket(id);
+    return;
+  }
+  const modal = document.getElementById('colorModal');
+  const variantCount = Object.values(quoteBasket).filter(it => it.productId === id).length;
+  modal.innerHTML = `
+    <div class="detail-header color-picker-header">
+      <button class="detail-close" onclick="closeColorPicker()">×</button>
+      <span class="detail-category">🎨 Choose Color</span>
+      <h2 class="detail-headline">${p.headline}</h2>
+      <p class="detail-name">${p.skuColors.length} colors available${p.skuLabel?` — ${p.skuLabel}`:''}</p>
+    </div>
+    <div class="detail-body">
+      <div class="color-picker-summary">
+        <div class="cps-row">
+          <span class="cps-label">Selected for quote</span>
+          <span class="cps-value" id="cpsSelectedCount">${variantCount} color${variantCount===1?'':'s'}</span>
+        </div>
+        <div class="cps-row">
+          <span class="cps-label">MOQ per color</span>
+          <span class="cps-value">${p.moq}</span>
+        </div>
+        <div class="cps-row">
+          <span class="cps-label">FOB Price</span>
+          <span class="cps-value">${p.price}</span>
+        </div>
+        ${p.skuSourceUrl ? `<div class="cps-row"><span class="cps-label">Color Chart</span><span class="cps-value"><a href="${p.skuSourceUrl}" target="_blank" rel="noopener" style="color:var(--gold-dark);font-weight:600;">View source ↗</a></span></div>` : ''}
+      </div>
+
+      <div class="color-picker-hint">
+        Click <strong>+</strong> to add a color to your quote, or click the swatch to enlarge.
+      </div>
+
+      <div class="sku-grid sku-grid-picker">
+        ${p.skuColors.map(s => {
+          const key = id + '::' + s.no;
+          const inBag = quoteBasket[key];
+          const nameAttr = s.name ? ` — ${s.name.replace(/"/g,'&quot;')}` : '';
+          const nameArg = s.name ? `,'${s.name.replace(/'/g,"\\'")}'` : `,''`;
+          return `
+          <div class="sku-swatch ${inBag?'in-basket':''}" title="Color #${s.no}${nameAttr} — click to enlarge">
+            <img src="${s.image}" alt="Color ${s.no}" loading="lazy" onclick="openSkuWithAdd('${s.image}','${s.no}',${id}${nameArg})">
+            <span class="sku-num">${s.name ? s.name : '#'+s.no}</span>
+            <button class="sku-add-btn" onclick="event.stopPropagation();addSkuToBasket(${id},'${s.no}','${s.image}'${nameArg});refreshColorPicker(${id});" title="Add ${s.name||'Color #'+s.no} to basket">${inBag?'✓':'+'}</button>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-copy-usp" onclick="closeColorPicker();setTimeout(()=>openDetails(${id}),250);">📖 View Full Details</button>
+        <button class="btn-add-modal" onclick="closeColorPicker();openDrawer();">🛒 Review Basket (${variantCount})</button>
+        <a class="btn-alibaba" href="${p.url}" target="_blank" rel="noopener">↗ Alibaba</a>
+      </div>
+    </div>`;
+  document.getElementById('colorOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeColorPicker(){
+  document.getElementById('colorOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Re-render picker after add (keeps modal open, updates count & badges)
+function refreshColorPicker(id){
+  if(document.getElementById('colorOverlay').classList.contains('open')){
+    openColorPicker(id);
+  }
 }
 
 function copyUSP(id){
