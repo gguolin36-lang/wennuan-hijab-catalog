@@ -1822,7 +1822,9 @@ footer::before{
       <a href="https://www.wennuanhijab.com/" target="_blank" rel="noopener">wennuanhijab.com</a>
       <a href="https://wennuanfushi.en.alibaba.com/" target="_blank" rel="noopener">Alibaba.com Store</a>
       <a href="mailto:wennuan@wennuanfactory.com">wennuan@wennuanfactory.com</a>
-      <a href="https://wa.me/8615024597561" target="_blank" rel="noopener">WhatsApp +86 150 2459 7561</a>
+      <a href="https://wa.me/8615024597561"
+         onclick="event.preventDefault(); openWhatsApp(); return false;"
+         rel="noopener">WhatsApp +86 150 2459 7561</a>
     </div>
     <div class="footer-col">
       <h5>Services</h5>
@@ -1852,8 +1854,12 @@ footer::before{
   </div>
 </div>
 
-<!-- WhatsApp Float -->
-<a href="https://wa.me/8615024597561" target="_blank" class="whatsapp-float" title="Chat on WhatsApp: +86 150 2459 7561">💬</a>
+<!-- WhatsApp Float (uses smart opener to handle app/in-app browser fallbacks) -->
+<a href="https://wa.me/8615024597561"
+   onclick="event.preventDefault(); openWhatsApp(); return false;"
+   class="whatsapp-float"
+   title="Chat on WhatsApp: +86 150 2459 7561"
+   aria-label="WhatsApp">💬</a>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -13014,6 +13020,83 @@ function setQty(key,val){
   localStorage.setItem('quoteBasket', JSON.stringify(quoteBasket));
 }
 
+/* ============================================================
+ * SMART WHATSAPP OPENER — cross-platform reliable jump
+ * Handles: iOS Safari popup blocker, Android WebView, WeChat/TikTok
+ * in-app browsers, desktop Chrome/Edge/Safari/Firefox.
+ *
+ * Strategy:
+ *   1. Detect in-app browser (WeChat/QQ/TikTok/Weibo) → prompt user
+ *   2. Mobile: try whatsapp:// scheme first (jumps native app),
+ *              fallback to https://wa.me/ after 1.2s if no app
+ *   3. Desktop: open WhatsApp Web directly in new tab via <a> click
+ *   4. Never rely on window.open() alone (popup-blocked on iOS)
+ * ============================================================ */
+const WHATSAPP_PHONE = '8615024597561';   // single source of truth
+
+function openWhatsApp(text){
+  const ua = navigator.userAgent || '';
+  const phone = WHATSAPP_PHONE;
+  const encoded = text ? encodeURIComponent(text) : '';
+
+  // Detect in-app browsers that block external schemes
+  const isWechat = /MicroMessenger/i.test(ua);
+  const isQQ     = /QQ\//i.test(ua) && !/Chrome/.test(ua);
+  const isTikTok = /(BytedanceWebview|musical_ly|TikTok|Douyin)/i.test(ua);
+  const isWeibo  = /Weibo/i.test(ua);
+  const inAppBlocked = isWechat || isQQ || isTikTok || isWeibo;
+
+  if(inAppBlocked){
+    // Show a guidance message — copy the link so user can paste in system browser
+    const fallbackUrl = `https://wa.me/${phone}${encoded ? '?text='+encoded : ''}`;
+    try {
+      navigator.clipboard && navigator.clipboard.writeText(fallbackUrl);
+    } catch(_){}
+    if(typeof showToast === 'function'){
+      showToast('⚠️ 请用浏览器打开（右上角…）— 链接已复制');
+    } else {
+      alert('请点击右上角"…"用系统浏览器打开 WhatsApp\n\n链接已复制到剪贴板：\n' + fallbackUrl);
+    }
+    return;
+  }
+
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
+  const webUrl = `https://wa.me/${phone}${encoded ? '?text='+encoded : ''}`;
+
+  if(isMobile){
+    // Try native scheme first — if WhatsApp app is installed, this jumps directly
+    const schemeUrl = `whatsapp://send?phone=${phone}${encoded ? '&text='+encoded : ''}`;
+    // Use document.location for iOS Safari compatibility (window.open often blocked)
+    const start = Date.now();
+    let didJump = false;
+
+    // Listen for page hidden — if app opened, browser tab goes background
+    const onHide = () => { didJump = true; document.removeEventListener('visibilitychange', onHide); };
+    document.addEventListener('visibilitychange', onHide);
+
+    // Attempt scheme jump
+    window.location.href = schemeUrl;
+
+    // Fallback to wa.me after 1.2s if app didn't open
+    setTimeout(() => {
+      document.removeEventListener('visibilitychange', onHide);
+      if(!didJump && Date.now() - start < 2500 && document.visibilityState === 'visible'){
+        // App not installed — fall through to web/install page
+        window.location.href = webUrl;
+      }
+    }, 1200);
+  } else {
+    // Desktop — open WhatsApp Web in new tab via real <a> click (avoids popup blockers)
+    const a = document.createElement('a');
+    a.href = webUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+}
+
 function submitQuoteWhatsApp(){
   const keys = Object.keys(quoteBasket);
   if(keys.length === 0){ showToast('Basket is empty'); return; }
@@ -13025,7 +13108,7 @@ function submitQuoteWhatsApp(){
     msg += `${i+1}. ${p.name}\n   Category: ${p.category}\n${skuLine}   Quantity: ${item.qty} pcs\n   Link: ${p.url}\n\n`;
   });
   msg += `Please send me your best quotation including shipping options.\n\nThank you.`;
-  window.open(`https://wa.me/8615024597561?text=${encodeURIComponent(msg)}`, '_blank');
+  openWhatsApp(msg);
 }
 
 function submitQuote(){
